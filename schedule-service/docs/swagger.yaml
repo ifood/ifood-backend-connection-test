@@ -1,52 +1,60 @@
 openapi: "3.0.0"
 info:
   version: 0.0.1
-  title: Swagger 3 placeholder
-  description: Be cool, document your api.
+  title: "[UN]Availability Scheduler Service"
+  description: Servico responsavel por registrar agendamentos de disponibilidade/indisponibilidade dos restaurantes
 servers:
   - url: http://localhost:3000
 
 paths:
-  /mypath:
-    get:
-      description: |
-        Dramatically cultivate covalent testing procedures after resource maximizing niches. Synergistically impact
-        revolutionary human capital vis-a-vis performance based e-services. Monotonectally generate leveraged schemas
-        via long-term high-impact e-commerce.
-      parameters:
-        - name: limit
-          in: query
-          description: Continually generate quality interfaces
-          required: false
-          schema:
-            type: integer
-            format: int32
-      responses:
-        '200':
-          description: |
-
+  /schedule:
+    post:
+      description: Registra um novo agendamento
+      requestBody:
+          required: true
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/MySchema'
+                $ref: '#/components/schemas/Schedule'
+      responses:
+        '201':
+          description: Devolve um objeto com o ID do agendamento
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
         default:
-          description: unexpected error
+          description: Em caso de erro (status 4xx ou 5xx)
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    MySchema:
-      required:
-        - param
+    Schedule:
+      type: object
       properties:
-        param:
+        id:
+          description: Identificador unico do agendamento
           type: string
-        limit:
-          type: int32
+        start:
+          description: Timestamp com a data/hora inicial do agendamento
+          type: string
+          format: date-time
+        end:
+          description: Timestamp com a data/hora final do agendamento
+          type: string
+          format: date-time
+        type:
+          description: Tipo do agendamento -  "AV" para disponível, "UN" para indisponível. Default "UN"
+          type: string
+          enum:
+          - AV
+          - UN
+      required:
+        - start
+        - end
+
 
     Error:
       required:
