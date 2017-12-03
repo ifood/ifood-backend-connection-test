@@ -1,0 +1,59 @@
+openapi: "3.0.0"
+info:
+  version: 0.0.1
+  title: Swagger 3 placeholder
+  description: Be cool, document your api.
+servers:
+  - url: http://localhost:3000
+
+paths:
+  /mypath:
+    get:
+      description: |
+        Dramatically cultivate covalent testing procedures after resource maximizing niches. Synergistically impact
+        revolutionary human capital vis-a-vis performance based e-services. Monotonectally generate leveraged schemas
+        via long-term high-impact e-commerce.
+      parameters:
+        - name: limit
+          in: query
+          description: Continually generate quality interfaces
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: |
+
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MySchema'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    MySchema:
+      required:
+        - param
+      properties:
+        param:
+          type: string
+        limit:
+          type: int32
+
+    Error:
+      required:
+        - status
+        - msg
+      properties:
+        status:
+          type: integer
+        message:
+          type: string

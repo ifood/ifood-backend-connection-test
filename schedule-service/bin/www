@@ -1,0 +1,11 @@
+#!/usr/bin/env node
+let application = require('../app/index');
+let express = application.app;
+let logger = application.logger;
+
+express.set('port', process.env.PORT || process.env.port || 3000);
+// express.set('env', process.env.NODE_ENV || "production" );
+
+let server = express.listen(express.get('port'), function() {
+  logger.info('Express server listening on port ' + server.address().port);
+});
