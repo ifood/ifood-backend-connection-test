@@ -1,6 +1,6 @@
 {
-  "name": "es6-express-app-skel",
-  "description": "ES6 Node Express skeleton app",
+  "name": "scheduler-service",
+  "description": "Aplicacao para gerenciamento de agendamentos",
   "version": "0.0.1",
   "private": true,
   "scripts": {
