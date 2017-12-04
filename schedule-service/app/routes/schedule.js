@@ -58,9 +58,8 @@ router.route('/')
         resp.status(200).send({ id : record.id });
       });
 
-  }
-  )
-  .get( (req, resp) => {
+  })
+  .get((req, resp) => {
 
     if( !securityCheck(req) ){
       resp.status(403).send({
@@ -93,6 +92,72 @@ router.route('/')
           });
         }
       });
+
+  });
+
+
+function requestChecker(req, resp) {
+  if( !securityCheck(req) ){
+    return 'Access denied';
+  }
+
+  let id = req.params.id;
+  if( !id ){
+    return 'Invalid request';
+  }
+
+}
+
+router.route('/:id')
+  .get((req, resp) => {
+
+    let msg = requestChecker(req, resp);
+    if( msg ) {
+      resp.status(400).send({
+        status:400,
+        message: msg
+      });
+      return;
+    }
+
+    collection.findOne({id: id}, (err, doc) => {
+      if( err ){
+        LOG.error(`Falha ao recuperar id ${id} do mongodb`, err);
+        resp.status(500).send({
+          status:500,
+          message: 'Falha ao recuperar dado do banco de dados'
+        });
+      } else {
+        let ret = wobj()
+          .add('id', doc.id)
+          .add('start', doc.start)
+          .add('end', doc.end)
+          .add('type', doc.type)
+          .add('reason', doc.reason)
+          .get();
+
+        resp.status(200).send(ret);
+      }
+    });
+
+  })
+
+  .delete( (req, resp) => {
+    let msg = requestChecker(req, resp);
+    if( msg ) {
+      resp.status(400).send({
+        status:400,
+        message: msg
+      });
+      return;
+    }
+
+    let id = req.params.id;
+    collection.deleteOne({id : id}, (err) => {
+      if( !err ){
+        resp.status(204).send();
+      }
+    });
 
   });
 
