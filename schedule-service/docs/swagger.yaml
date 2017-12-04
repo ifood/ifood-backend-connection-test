@@ -29,6 +29,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+
+    get:
+      description: Recupera a lista de agendamentos de acordo com o filtro informado
+      parameters:
+        - name: restaurantId
+          in: query
+          description: Filtra pelo id do restaurante
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: limit
+          in: query
+          description: Numero maximo de resultados
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        200:
+          description: Lista de agendamentos conforme criterio
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Schedule'
+        403:
+          description: Caso o acesso aos dados do restaurante informado seja negado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Em caso de erro (status 4xx ou 5xx)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
 components:
   schemas:
     Schedule:
