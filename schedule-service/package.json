@@ -1,7 +1,7 @@
 {
   "name": "scheduler-service",
   "description": "Aplicacao para gerenciamento de agendamentos",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "start": "NODE_ENV=production node bin/www",
