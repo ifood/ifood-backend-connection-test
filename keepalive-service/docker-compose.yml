@@ -1,0 +1,29 @@
+version: '2'
+
+services:
+# ===================================================================
+  keepalive-service:
+    container_name: keepalive-service
+    hostname: keepalive-service
+    image: keepalive-service:dev
+
+    build:
+      context: .
+      dockerfile: .docker/development.dockerfile
+    volumes:
+      - .:/opt/app
+      - /opt/app/node_modules
+    ports:
+      - "3000:3000"
+    working_dir: /opt/app
+    environment:
+      - NODE_ENV=development
+    networks:
+      - app-private-network
+
+    entrypoint: npm run develop
+# ===================================================================
+networks:
+  app-private-network:
+    driver: bridge
+
