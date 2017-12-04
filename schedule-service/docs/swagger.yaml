@@ -69,6 +69,59 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
+  /schedule/{id}:
+    get:
+      description: Recupera um agendamento com base no ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: O objeto associado ao ID informado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+        403:
+          description: Caso o acesso seja negado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Em caso de erro (status 4xx ou 5xx)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      description: Remove um agendamento com base no ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        204:
+          description: O agendamento foi removido com sucesso
+        403:
+          description: Caso o acesso seja negado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Em caso de erro (status 4xx ou 5xx)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
 components:
   schemas:
     Schedule:
