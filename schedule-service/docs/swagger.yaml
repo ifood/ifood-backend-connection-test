@@ -45,6 +45,9 @@ components:
           description: Timestamp com a data/hora final do agendamento
           type: string
           format: date-time
+        reason:
+          description: Motivo da indisponibilidade
+          type: string
         type:
           description: Tipo do agendamento -  "AV" para disponível, "UN" para indisponível. Default "UN"
           type: string
