@@ -6,11 +6,19 @@ const shortid = require('shortid');
 const mongodb = require('../helpers/mongodb');
 
 let collection;
-mongodb.connect().then((db) => {
-  collection = db.collection('schedules');
-});
+mongodb.connect()
+  .then((db) => {
+    collection = db.collection('schedules');
+  })
+  .catch((err) => {
+    LOG.error("Falha ao conectar no MongoDB", err);
+  });
 
 const router = express.Router();
+
+function securityCheck(req){
+  return true;
+}
 
 router.route('/')
   .post((req, resp) => {
@@ -48,6 +56,42 @@ router.route('/')
     collection.insertOne(record)
       .then(() => {
         resp.status(200).send({ id : record.id });
+      });
+
+  }
+  )
+  .get( (req, resp) => {
+
+    if( !securityCheck(req) ){
+      resp.status(403).send({
+        status: 403,
+        message: "Access Denied"
+      });
+      return;
+    }
+
+    let filter = {};
+    if( req.query.restaurantId ){
+      filter.restaurantId = req.query.restaurantId;
+    }
+
+    let limit = (!req.query.limit || req.query.limit > 50) ? 20 : parseInt(req.query.limit);
+
+    collection.find(filter).limit(limit)
+      .toArray((err, docs) => {
+        if( !err ){
+          let ret = docs.map( elem => {
+            return wobj(elem)
+              .del("_id")
+              .get();
+          } );
+          resp.status(200).send(ret);
+        } else {
+          resp.status(500).send({
+            status: 500,
+            message: err
+          });
+        }
       });
 
   });
