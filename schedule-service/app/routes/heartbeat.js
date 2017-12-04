@@ -17,16 +17,21 @@ Heartbeat object:
 }
  */
 
+const mongodb = require('../helpers/mongodb');
+
 const router = express.Router();
 
 router.route('/')
   .get((req, resp) => {
-
-    let ret = {
-      status: "OK"
+    let currentStatus = {
+      status: mongodb.status
     };
 
-    resp.status(200).send(ret);
+    if( mongodb.status !== "CONNECTED" ){
+      currentStatus.message = mongodb.errorMessage;
+    }
+
+    resp.status(200).send(currentStatus);
 
   });
 
