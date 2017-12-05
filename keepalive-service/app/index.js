@@ -18,6 +18,8 @@ app.use(cors());
 /* ***************************** ROUTE CONFIGURATION */
 const routes = require('./routes');
 
+app.use('/v1/keepalive', routes.keepaliveHttp);
+
 /* HEALTH CHECK */
 app.use('/heartbeat', routes.heartbeat);
 
