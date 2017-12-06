@@ -15,10 +15,11 @@ app.use(bodyParser.json());
 const cors = require('cors');
 app.use(cors());
 
-require('./routes/event-consumer');
+require('./services/event-consumer');
 
 /* ***************************** ROUTE CONFIGURATION */
 const routes = require('./routes');
+app.use('/v1/dashboard/', routes.dashboard);
 
 /* HEALTH CHECK */
 app.use('/heartbeat', routes.heartbeat);

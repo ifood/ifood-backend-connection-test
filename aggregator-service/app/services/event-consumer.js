@@ -1,6 +1,7 @@
 const LOG = require('../helpers/logger');
 const rabbit = require('amqplib/callback_api');
 const mongodb = require('../helpers/mongodb');
+const socket = require('../helpers/socket');
 
 let collection;
 mongodb.connect()
@@ -36,6 +37,7 @@ rabbit.connect('amqp://localhost', (err, conn) => {
           }, (err, result) => {
             if( !err ){
               LOG.info(`Registro de clientId ${obj.clientId} atualizado. Result: ${result.ok}, event: ${obj.event}`);
+              socket.sender('updatechart', { id: obj.clientId, state: obj.event });
             } else {
               LOG.error("MongoDB???? Ta me tirando? ", err);
             }

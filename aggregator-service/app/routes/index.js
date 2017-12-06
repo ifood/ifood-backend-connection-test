@@ -1,1 +1,2 @@
-exports.heartbeat = require("./heartbeat");
+exports.heartbeat = require('./heartbeat');
+exports.dashboard = require('./dashboard');
