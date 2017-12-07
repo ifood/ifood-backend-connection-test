@@ -98,7 +98,7 @@ router.route('/ping')
           if( err ) {
             LOG.error("Falha ao tentar gravar hash: " + arrStore, err);
           } else {
-            redisClient.expire(id, 10);
+            redisClient.expire(id, 15);
           }
         });
 
