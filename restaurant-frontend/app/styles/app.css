@@ -1,0 +1,219 @@
+/*  Application CSS ----------------------------------------------------------*/
+
+.danger {
+  color:darkred;
+}
+
+div.column {
+  padding: 20px
+}
+
+div.division-right {
+  border-right: dotted 1px #CCC;
+  font-size: 0.8em;
+  height:100vh;
+}
+
+div.row.content {
+  padding-top: 10px;
+}
+
+span.text-warning {
+  color: #B41D22;
+}
+
+div.twelve {
+  margin: 0;
+}
+
+div.topbar {
+  background-color: #B41D22;
+  color: antiquewhite;
+  height: 70px;
+  padding-top: 20px;
+}
+
+body {
+  font-family: "Noto Sans", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.disconnected {
+  animation: blinker 0.5s linear infinite;
+}
+
+@keyframes blinker {
+  50% { opacity: 0; }
+}
+
+.button.button-primary,
+button.button-primary,
+input[type="submit"].button-primary,
+input[type="reset"].button-primary,
+input[type="button"].button-primary {
+  background-color: #B41D22;
+  border-color: #B41D22;
+}
+.button.button-primary:hover,
+button.button-primary:hover,
+input[type="submit"].button-primary:hover,
+input[type="reset"].button-primary:hover,
+input[type="button"].button-primary:hover,
+.button.button-primary:focus,
+button.button-primary:focus,
+input[type="submit"].button-primary:focus,
+input[type="reset"].button-primary:focus,
+input[type="button"].button-primary:focus {
+  background-color: #C61F24;
+  border-color: #C61F24;
+}
+
+div.navsidebar {
+  background-color: #606060;
+  height: 100vh;
+  color: whitesmoke;
+}
+
+div.navsidebar h5 {
+  font-size: 1.7em;
+  color:white;
+  background-color: #333333;
+  padding: 7px;
+}
+
+div.navsidebar a {
+  display: block;
+  padding: 10px 0 10px 30px;
+  color: whitesmoke;
+  text-decoration: none;
+  font-size: 1.2em;
+}
+
+div.navsidebar a:hover {
+  background-color: #0FA0CE;
+  border-left: solid 6px white;
+}
+
+ul.nav {
+  list-style-type: none;
+  list-style-position: inside;
+}
+
+ul.nav li {
+  padding: 20px 0 20px 0;
+  background-color: orange;
+  color: #333;
+  margin: 0;
+  display: inline;
+}
+
+ul.inline {
+  list-style-type: none;
+  margin-top: -4px;
+  padding: 0;
+}
+
+li {
+  float: left;
+  padding-right: 50px;
+}
+
+li a {
+  display: block;
+  color: antiquewhite;
+  text-align: center;
+  padding: 5px;
+  text-decoration: none;
+}
+
+li a:hover {
+  color: white;
+}
+
+.badge {
+  position:relative;
+}
+.badge[data-badge]:after {
+  content:attr(data-badge);
+  position:absolute;
+  top:1px;
+  right:-10px;
+  font-size:.6em;
+  font-weight: bolder;
+  background:white;
+  color:#C61F24;
+  width:15px;height:15px;
+  text-align:center;
+  line-height:16px;
+  border-radius:50%;
+  box-shadow:0 0 1px #333;
+}
+
+
+div.card {
+  width: 230px;
+  border: dotted 1px #ccc;
+  background-color: #fafafa;
+  margin: 10px 10px 0 0;
+}
+
+div.card h4 {
+  font-size: 1.2em;
+  background-color: #B41D22;
+  color: whitesmoke;
+  padding: 7px;
+  margin: 0;
+}
+
+div.card h4.pendente {
+  background-color: #B41D22;
+}
+
+div.card h4.emandamento {
+  background-color: darkolivegreen;
+}
+
+div.card h4.atrasado {
+  background-color: darkorange;
+}
+
+div.card h4.fudeu {
+  background-color: #000;
+}
+
+
+div.card h4 small.title {
+  font-size: 0.7em;
+}
+
+div.card h5 {
+  font-size: 1em;
+  font-weight: bolder;
+  padding: 7px 7px 0 7px;
+  margin: 0
+}
+
+div.card div.endereco {
+  padding: 7px;
+  font-size: 0.8em;
+}
+
+div.card ul {
+  padding: 0 7px 0 7px;
+  margin: 0;
+}
+
+div.card ul li {
+  margin: 0;
+  font-size: 0.8em;
+}
+
+div.card div.bottom {
+  padding: 7px;
+  font-size: 0.8em;
+}
+
+div.card span.valor {
+  color: red;
+  font-weight: bolder;
+  font-stretch: extra-expanded;
+}

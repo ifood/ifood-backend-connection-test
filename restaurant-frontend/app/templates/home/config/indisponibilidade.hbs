@@ -1,0 +1,64 @@
+<div class="row content">
+  <div class="one column">&nbsp;</div>
+  <div class="eleven columns">
+    <h4>Indisponibilidade</h4>
+    <p>
+      Configuração de Indisponibilidade Programada
+    </p>
+
+    <div class="row">
+      <div class="three columns">
+        <label for="dataini">Data/Hora de início</label>
+        <input type="text" class="u-full-width" id="dataini"/>
+      </div>
+      <div class="three columns">
+        <label for="datafim">Data/Hora de fim</label>
+        <input type="text" class="u-full-width" id="datafim"/>
+      </div>
+      <div class="three columns">
+        <label for="reason">Motivo</label>
+        {{#select-box/native on-select=(route-action "selectReason") as |sb|}}
+          <option>Selecione</option>
+          {{#each model.reasons as |reason|}}
+            {{sb.option value=reason.id label=reason.reason}}
+          {{/each}}
+        {{/select-box/native}}
+
+      </div>
+      <div class="two columns">
+        <label for="buttonplus">&nbsp;</label>
+        <button class="button-primary" id="buttonplus" {{action "newRecord"}}>{{fa-icon "plus"}}</button>
+      </div>
+    </div>
+    <div class="row">
+      <small><i>Datas e horas no formato <b>dd/mm/aaaa hh:mm:ss</b></i></small>
+    </div>
+
+    <hr/>
+
+    <table class="u-full-width">
+      <thead>
+      <tr>
+        <th>&nbsp;</th>
+        <th>Início</th>
+        <th>Fim</th>
+        <th>Motivo</th>
+      </tr>
+      </thead>
+      <tbody>
+      {{#each model.list as |record|}}
+      <tr>
+        <td>{{fa-icon "times-circle" class="danger"}}</td>
+        <td>{{record.ini}}</td>
+        <td>{{record.end}}</td>
+        <td>{{record.reason}}</td>
+      </tr>
+      {{/each}}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div id="modal" style="display: none">
+  <h5>Esse é um modal</h5>
+</div>

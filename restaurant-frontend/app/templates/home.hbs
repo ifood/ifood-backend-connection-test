@@ -1,0 +1,32 @@
+<div class="row">
+  <div class="twelve columns topbar">
+    <div class="three columns" style="text-align: center">
+      <img src="/images/ifood-logo2.png" style="margin-top: -12px"/>
+    </div>
+    <div class="four columns">
+      <ul class="inline">
+        <li>{{#link-to "home.pedidos" class="badge" data-badge="2"}}Pedidos{{/link-to}}</li>
+        <li>{{#link-to "home.config"}}Configurações{{/link-to}}</li>
+      </ul>
+    </div>
+    <div class="three columns">
+      Usuário: {{model.username}}
+    </div>
+    <div class="two columns" style="padding-right: 20px;">
+      <span class="u-pull-right">
+        {{#if model.statusconn}}
+          {{fa-icon "circle" style="color:lightgreen"}} Online
+        {{else}}
+          {{fa-icon "chain-broken" class="disconnected" style="color:white"}} <strong class="color:white">OFFLINE</strong>
+        {{/if}}
+        | <a {{action "logout"}}>Sair</a>
+      </span>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="twelve columns">
+    {{outlet}}
+  </div>
+</div>
+
