@@ -2,7 +2,7 @@
   <div class="nine columns suptopbar suptopbar-left">&nbsp;</div>
   <div class="three columns suptopbar suptopbar-right">
     Autenticado como: <strong>{{model.username}}</strong>
-    desde às <strong>13:46:32</strong>
+    desde às <strong>{{moment-format model.loggedIn 'HH:mm:ss'}}</strong>
     | <a href="#" {{action "logout"}}>Sair {{fa-icon "sign-out"}}</a>
   </div>
 </div>
@@ -18,7 +18,7 @@
     </div>
     <div class="three columns u-pull-right" style="margin:0;">
       <div class="eight columns">
-        <a id="button-turnoff" href="#" class="button" style="margin: -3px 0 0 -20px">{{fa-icon "chain-broken"}} Indisponivel</a>
+        {{#link-to "home.disponibilidade" class="button" id="button-turnoff"}}{{fa-icon "power-off"}} Disponibilidade{{/link-to}}
       </div>
       <div class="four columns" style="text-align: right">
       <span style="padding-right: 20px">

@@ -20,7 +20,8 @@ export default Route.extend({
 
     this.modelObj = {
       username: this.session.username,
-      clientId: this.session.clientId
+      clientId: this.session.clientId,
+      loggedIn: this.session.timestamp
     };
 
     let keepAlive = () => {

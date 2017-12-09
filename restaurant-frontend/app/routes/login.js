@@ -27,7 +27,8 @@ export default Route.extend({
           } else {
             let session = JSON.stringify({
               username: model.username,
-              clientId: aux[1]
+              clientId: aux[1],
+              timestamp: new Date()
             });
             sessionStorage.ifood_test = session;
             this.transitionTo('home.pedidos');
