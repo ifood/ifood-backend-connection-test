@@ -16,6 +16,7 @@
     "tests"
   ],
   "dependencies": {
-    "skeleton": "skeleton-css#^2.0.4"
+    "skeleton": "skeleton-css#^2.0.4",
+    "pace": "^1.0.2"
   }
 }
