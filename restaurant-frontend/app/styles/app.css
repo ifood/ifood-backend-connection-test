@@ -1,7 +1,33 @@
 /*  Application CSS ----------------------------------------------------------*/
 
+
+
+a {
+  color: antiquewhite;
+  text-decoration: none;
+}
+
+a:hover {
+  color: white;
+}
+
+#button-turnoff {
+  border: solid 1px #eee;
+  background-color: whitesmoke;
+  color: #B41D22;
+}
+
+img.online-icon {
+  width: 40px;
+  margin-top: -6px
+}
+
 .danger {
   color:darkred;
+}
+
+#logo {
+  margin-top: -10px;
 }
 
 div.column {
@@ -26,11 +52,27 @@ div.twelve {
   margin: 0;
 }
 
+div.suptopbar {
+  height:15px;
+  background-color: #333;
+}
+
+div.suptopbar-left {
+  background-color: #B41D22;
+}
+
+div.suptopbar-right {
+  font-size: 0.6em;
+  color: whitesmoke;
+  text-align: right;
+  padding: 1px 20px 0 0;
+}
+
 div.topbar {
   background-color: #B41D22;
   color: antiquewhite;
-  height: 70px;
-  padding-top: 20px;
+  height: 60px;
+  padding-top: 13px;
 }
 
 body {

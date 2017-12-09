@@ -1,26 +1,34 @@
+<div class="row suptopbar">
+  <div class="nine columns suptopbar suptopbar-left">&nbsp;</div>
+  <div class="three columns suptopbar suptopbar-right">
+    Autenticado como: <strong>{{model.username}}</strong>
+    desde às <strong>13:46:32</strong>
+    | <a href="#" {{action "logout"}}>Sair {{fa-icon "sign-out"}}</a>
+  </div>
+</div>
 <div class="row">
   <div class="twelve columns topbar">
     <div class="three columns" style="text-align: center">
-      <img src="/images/ifood-logo2.png" style="margin-top: -12px"/>
+      <img id="logo" src="/images/ifood-logo2.png"/>
     </div>
-    <div class="four columns">
+    <div class="six columns">
       <ul class="inline">
         <li>{{#link-to "home.pedidos" class="badge" data-badge="2"}}Pedidos{{/link-to}}</li>
-        <li>{{#link-to "home.config"}}Configurações{{/link-to}}</li>
       </ul>
     </div>
-    <div class="three columns">
-      Usuário: {{model.username}}
-    </div>
-    <div class="two columns" style="padding-right: 20px;">
-      <span class="u-pull-right">
+    <div class="three columns u-pull-right" style="margin:0;">
+      <div class="eight columns">
+        <a id="button-turnoff" href="#" class="button" style="margin: -3px 0 0 -20px">{{fa-icon "chain-broken"}} Indisponivel</a>
+      </div>
+      <div class="four columns" style="text-align: right">
+      <span style="padding-right: 20px">
         {{#if model.statusconn}}
-          {{fa-icon "circle" style="color:lightgreen"}} Online
+          <img class="online-icon" title="Conectado" src="/images/online.svg"/>
         {{else}}
-          {{fa-icon "chain-broken" class="disconnected" style="color:white"}} <strong class="color:white">OFFLINE</strong>
+          {{fa-icon "chain-broken" title="Desconectado" class="disconnected fa-2x" style="color:white"}}
         {{/if}}
-        | <a {{action "logout"}}>Sair</a>
       </span>
+      </div>
     </div>
   </div>
 </div>
