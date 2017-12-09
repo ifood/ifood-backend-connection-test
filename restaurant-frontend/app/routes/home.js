@@ -25,14 +25,15 @@ export default Route.extend({
 
     let keepAlive = () => {
       let data = JSON.stringify({
-        clientId:  "" + this.session.clientId
+        clientId:  "" + this.session.clientId,
+        timestamp: new Date().getTime()
       });
 
-      let success = (data, status, xhr) => {
+      let success = () => {
         Ember.set(this.modelObj, 'statusconn', true);
       };
 
-      let error = (xhr, status) => {
+      let error = () => {
         Ember.set(this.modelObj, 'statusconn', false);
       };
 

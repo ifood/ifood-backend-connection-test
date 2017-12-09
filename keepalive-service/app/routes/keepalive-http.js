@@ -3,6 +3,8 @@ const router = express.Router();
 const redis = require('redis');
 const LOG = require('../helpers/logger');
 const rabbit = require('amqplib/callback_api');
+const withobj = require('../helpers/with-obj').withObj;
+const which = require('../helpers/which').which;
 
 let redisClient = redis.createClient({
   host: 'localhost',
@@ -13,6 +15,7 @@ let evtSubscriber = redisClient.duplicate();
 
 let __REDIS_READY = false;
 let __RABBIT_READY = false;
+let __CACHE_RECORD_EXPIRATION_IN_SECS = 15;
 
 const EVENT_CHANNEL_NAME = "KEEPALIVE_EVENTS";
 let eventChannel;
@@ -30,24 +33,23 @@ evtSubscriber.on("psubscribe", function (channel) {
 });
 
 evtSubscriber.on("pmessage", function (pattern, channel, message) {
-  if( !__RABBIT_READY ){
+  if (!__RABBIT_READY) {
     LOG.warn("RabbitMQ indisponivel. Mensagem sera ignorada.");
   } else {
-    let event = {
-      event: "OFFLINE",
-      clientId: message
-    };
-
-    let serial = new Buffer(JSON.stringify(event));
-    eventChannel.sendToQueue(EVENT_CHANNEL_NAME, serial);
+    try {
+      Utils.dispatchEvent(Builders.event(message, 'OFFLINE', new Date().getTime()));
+    } catch (e) {
+      LOG.error(`Falha ao tentar publicar evento de expiracao do Redis. A mensagem '${message}' sera ignorada`, e);
+      return false;
+    }
   }
-  LOG.info(`Recebi: ${message} in channel ${channel}, with pattern ${pattern}`);
+  LOG.debug(`Recebi: ${message} in channel ${channel}, with pattern ${pattern}`);
 });
 
 evtSubscriber.psubscribe("__key*__:*");
 
 rabbit.connect('amqp://localhost', (err, conn) => {
-  if( !err ){
+  if (!err) {
     LOG.info("RabbitMQ, eh nois!");
     conn.createChannel((err, ch) => {
       ch.assertQueue(EVENT_CHANNEL_NAME);
@@ -63,49 +65,142 @@ rabbit.connect('amqp://localhost', (err, conn) => {
 router.route('/ping')
   .post((req, resp) => {
 
-    if( !__REDIS_READY ) {
+    if (!__REDIS_READY) {
       resp.setRequestHeader('Retry-After', new Date(new Date().getTime() * 1000 * 10).toISOString());
       resp.status(503).send();
       return;
     }
 
-    let id = req.body.clientId;
+    let client = Builders.clientInfo(req);
 
-    redisClient.exists(id, (err, reply) => {
-      if(!err){
+    redisClient.exists(client.clientId, (err, reply) => {
+      if (err) {
+        resp.status(500).send(Builders.error(500, 'Fail to update client status'));
+      } else {
 
-        let arrStore = [id, 'lastHit', new Date().toISOString()];
-
-        if( !reply ) {
-          // grava e seta expiracao
-          arrStore.push('onlineSince');
-          arrStore.push(new Date().toISOString());
-
-          // gera evento de online
-          let event = {
-            event: "ONLINE",
-            clientId: "" + id,
-            clientTs: req.body.timestamp
-          };
-
-          let serial = new Buffer(JSON.stringify(event));
-          eventChannel.sendToQueue(EVENT_CHANNEL_NAME, serial);
-          LOG.info(`${id} just become online`);
-
+        if (!reply) {
+          try {
+            Utils.dispatchEvent(Builders.event(client.clientId, 'ONLINE'));
+            LOG.info(`${client.clientId} just become online`);
+          } catch (dispatchError) {
+            LOG.error("Falha ao tentar emitir evento: ", dispatchError);
+            resp.status(500).send(Builders.error(500, 'Failt to update client status'));
+            return;
+          }
         }
 
-        redisClient.hmset(arrStore, (err, reply) => {
-          if( err ) {
-            LOG.error("Falha ao tentar gravar hash: " + arrStore, err);
-          } else {
-            redisClient.expire(id, 15);
-          }
-        });
+        Rules.updateKeepalive(client)
+          .then( () => {
+            resp.status(204).send();
+          })
+          .catch( (err) => {
+            LOG.error(`Falha ao atualizar keepalive do cliente ${client.clientId}`, err);
+            resp.status(500).send(Builders.error(500, 'Fail to update client status'));
+          });
 
       }
     });
-    resp.status(204).send();
+
+  });
+
+router.route('/status')
+  .post((req, resp) => {
+
+    let client = Builders.clientInfo(req);
+
+    !(Object.keys(Rules.statusChanges)
+      .filter(e => {
+        return e === client.status;
+      }).length === 1) && (() => {
+        resp.status(400).send(Builders.error(400, `Status ${client.status} is invalid`));
+      })();
+
+    try {
+      Rules.statusChanges[client.status](client);
+      resp.status(204).send();
+    } catch (e) {
+      resp.status(e.code).send(e);
+    }
 
   });
 
 module.exports = router;
+
+let Builders = {
+
+  clientInfo(req) {
+    return withobj({})
+      .add('clientId', req.body.clientId)
+      .add('timestamp', req.body.timestamp)
+      .add('status', req.body.status)
+      .get();
+  },
+
+  event(clientId, eventName, timestamp) {
+    return withobj({})
+      .add('clientId', clientId)
+      .add('name', eventName)
+      .add('timestamp', (timestamp) ? timestamp : new Date().getTime())
+      .get();
+  },
+
+  cacheObject(client, timestamp){
+    return [
+      client.clientId,
+      'serverTimestamp', (timestamp ? timestamp : new Date().getTime()),
+      'clientTimestamp', client.timestamp
+    ];
+  },
+
+  error(code, message) {
+    return withobj({})
+      .add('code', code)
+      .add('message', message)
+      .get();
+  }
+
+};
+
+let Rules = {
+  statusChanges: {
+    'UN': (body) => {
+      LOG.debug(`Tornando o cliente ${body.clientId} indisponivel`);
+      Utils.dispatchEvent(Builders.event(body.clientId, 'UNAVAILABLE'));
+      redisClient.expire(body.clientId, 1);
+    },
+    'AV': (body) => {
+      LOG.debug(`Retomando a disponibilidade do cliente ${body.clientId}`);
+      Utils.dispatchEvent(Builders.event(body.clientId, 'AVAILABLE'));
+
+      this.becomeOnline(Builders.status());
+    }
+  },
+
+  updateKeepalive(client) {
+    return new Promise( (resolve, reject) => {
+      let cacheObj = Builders.cacheObject(client);
+      redisClient.hmset(cacheObj, (err) => {
+        if (err) {
+          LOG.error("Falha ao tentar gravar hash: " + cacheObj, err);
+          reject(err);
+        } else {
+          redisClient.expire(client.clientId, __CACHE_RECORD_EXPIRATION_IN_SECS);
+          resolve();
+        }
+      });
+    });
+  }
+};
+
+let Utils = {
+  dispatchEvent(event) {
+    let validEvent = which(event.name)
+      .isOneOf('ONLINE', 'OFFLINE', 'AVAILABLE', 'UNAVAILABLE');
+
+    if (!validEvent) {
+      throw `O evento ${event.name} nao eh valido`;
+    } else {
+      eventChannel.sendToQueue(EVENT_CHANNEL_NAME, new Buffer(JSON.stringify(event)));
+    }
+  }
+};
