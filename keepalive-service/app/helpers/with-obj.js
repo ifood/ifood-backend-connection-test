@@ -5,8 +5,11 @@ module.exports.withObj = (obj, opts) => {
     opts: opts || {},
     innerObj: Object.assign({}, obj) || {},
 
-    add(prop, value) {
-      if (value !== undefined && value !== null) {
+    add(prop, value, condition) {
+      if( condition === undefined ){
+        condition = (value !== undefined && value !== null);
+      }
+      if (condition)  {
         this.innerObj[prop] = value;
       }
       return this;

@@ -2,7 +2,7 @@ module.exports.which = (obj) => {
 
   return {
 
-    innerObj: Object.assign({}, obj) || {},
+    innerObj: (typeof obj === 'object') ? Object.assign({}, obj) || {} : obj,
 
     isNull(...props){
       return props.filter(prop => {
@@ -11,6 +11,14 @@ module.exports.which = (obj) => {
           || aux === null
           || (typeof aux === 'string' && aux === "");
       }) || [];
+    },
+
+    isOneOf(...values){
+      return (values
+        .filter( vl => {
+          return this.innerObj === vl;
+        })
+        .length > 0);
     }
   };
 
