@@ -1,13 +1,14 @@
 openapi: "3.0.0"
 info:
   version: 0.0.1
-  title: "[UN]Availability Scheduler Service"
-  description: Servico responsavel por registrar agendamentos de disponibilidade/indisponibilidade dos restaurantes
+  title: "keepalive-service"
+  description: Servico responsavel receber as informações de keepalive dos clientes
 servers:
   - url: http://localhost:3000
+    description: Development server
 
 paths:
-  /schedule:
+  /ping:
     post:
       description: Registra um novo agendamento
       requestBody:
