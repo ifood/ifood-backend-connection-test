@@ -79,6 +79,7 @@ router.route('/ping')
       } else {
 
         if (!reply) {
+
           try {
             Utils.dispatchEvent(Builders.event(client.clientId, 'ONLINE'));
             LOG.info(`${client.clientId} just become online`);
@@ -115,12 +116,13 @@ router.route('/status')
         resp.status(400).send(Builders.error(400, `Status ${client.status} is invalid`));
       })();
 
-    try {
-      Rules.statusChanges[client.status](client);
-      resp.status(204).send();
-    } catch (e) {
-      resp.status(e.code).send(e);
-    }
+    Rules.statusChanges[client.status](client)
+      .then(() => {
+        resp.status(204).send();
+      })
+      .catch((err) => {
+        resp.status(500).send(err);
+      });
 
   });
 
@@ -164,15 +166,46 @@ let Builders = {
 let Rules = {
   statusChanges: {
     'UN': (body) => {
-      LOG.debug(`Tornando o cliente ${body.clientId} indisponivel`);
-      Utils.dispatchEvent(Builders.event(body.clientId, 'UNAVAILABLE'));
-      redisClient.expire(body.clientId, 1);
+
+      return new Promise((resolve, reject) => {
+        LOG.debug(`Tornando o cliente ${body.clientId} indisponivel`);
+        let cacheObj = Builders.cacheObject(body);
+        cacheObj.push('unavailable');
+        cacheObj.push(true);
+
+        redisClient.hmset(cacheObj, (err) => {
+          if (err) {
+            LOG.error("Falha ao tentar gravar hash: " + cacheObj, err);
+            reject(err);
+          } else {
+            try {
+              Utils.dispatchEvent(Builders.event(body.clientId, 'UNAVAILABLE'));
+              resolve();
+            } catch (e) {
+              reject(e);
+            }
+          }
+        });
+
+      });
+
     },
     'AV': (body) => {
-      LOG.debug(`Retomando a disponibilidade do cliente ${body.clientId}`);
-      Utils.dispatchEvent(Builders.event(body.clientId, 'AVAILABLE'));
 
-      this.becomeOnline(Builders.status());
+      return new Promise((resolve, reject) => {
+        LOG.debug(`Retomando a disponibilidade do cliente ${body.clientId}`);
+        Utils.dispatchEvent(Builders.event(body.clientId, 'AVAILABLE'));
+
+        try {
+          Utils.dispatchEvent(Builders.event(body.clientId, 'ONLINE'));
+          LOG.info(`${body.clientId} just become online`);
+          resolve();
+        } catch (dispatchError) {
+          LOG.error("Falha ao tentar emitir evento: ", dispatchError);
+          reject(dispatchError);
+        }
+      });
+
     }
   },
 
