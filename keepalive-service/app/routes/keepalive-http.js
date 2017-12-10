@@ -104,28 +104,6 @@ router.route('/ping')
 
   });
 
-router.route('/status')
-  .post((req, resp) => {
-
-    let client = Builders.clientInfo(req);
-
-    !(Object.keys(Rules.statusChanges)
-      .filter(e => {
-        return e === client.status;
-      }).length === 1) && (() => {
-        resp.status(400).send(Builders.error(400, `Status ${client.status} is invalid`));
-      })();
-
-    Rules.statusChanges[client.status](client)
-      .then(() => {
-        resp.status(204).send();
-      })
-      .catch((err) => {
-        resp.status(500).send(err);
-      });
-
-  });
-
 module.exports = router;
 
 let Builders = {
@@ -149,8 +127,8 @@ let Builders = {
   cacheObject(client, timestamp){
     return [
       client.clientId,
-      'serverTimestamp', (timestamp ? timestamp : new Date().getTime()),
-      'clientTimestamp', client.timestamp
+      'lastHitServer', (timestamp ? timestamp : new Date().getTime()),
+      'lastHitClient', client.timestamp
     ];
   },
 
@@ -164,51 +142,6 @@ let Builders = {
 };
 
 let Rules = {
-  statusChanges: {
-    'UN': (body) => {
-
-      return new Promise((resolve, reject) => {
-        LOG.debug(`Tornando o cliente ${body.clientId} indisponivel`);
-        let cacheObj = Builders.cacheObject(body);
-        cacheObj.push('unavailable');
-        cacheObj.push(true);
-
-        redisClient.hmset(cacheObj, (err) => {
-          if (err) {
-            LOG.error("Falha ao tentar gravar hash: " + cacheObj, err);
-            reject(err);
-          } else {
-            try {
-              Utils.dispatchEvent(Builders.event(body.clientId, 'UNAVAILABLE'));
-              resolve();
-            } catch (e) {
-              reject(e);
-            }
-          }
-        });
-
-      });
-
-    },
-    'AV': (body) => {
-
-      return new Promise((resolve, reject) => {
-        LOG.debug(`Retomando a disponibilidade do cliente ${body.clientId}`);
-        Utils.dispatchEvent(Builders.event(body.clientId, 'AVAILABLE'));
-
-        try {
-          Utils.dispatchEvent(Builders.event(body.clientId, 'ONLINE'));
-          LOG.info(`${body.clientId} just become online`);
-          resolve();
-        } catch (dispatchError) {
-          LOG.error("Falha ao tentar emitir evento: ", dispatchError);
-          reject(dispatchError);
-        }
-      });
-
-    }
-  },
-
   updateKeepalive(client) {
     return new Promise( (resolve, reject) => {
       let cacheObj = Builders.cacheObject(client);
@@ -228,7 +161,7 @@ let Rules = {
 let Utils = {
   dispatchEvent(event) {
     let validEvent = which(event.name)
-      .isOneOf('ONLINE', 'OFFLINE', 'AVAILABLE', 'UNAVAILABLE');
+      .isOneOf('ONLINE', 'OFFLINE');
 
     if (!validEvent) {
       throw `O evento ${event.name} nao eh valido`;
