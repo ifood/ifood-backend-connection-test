@@ -1,0 +1,79 @@
+openapi: "3.0.0"
+info:
+  version: 0.0.1
+  title: "keepalive-service"
+  description: Servico responsavel receber as informações de keepalive dos clientes
+servers:
+  - url: http://localhost:3000
+    description: Development server
+
+paths:
+  /ping:
+    post:
+      description: Informa o servidor do ultimo timestamp em que esteve disponível.
+      requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      responses:
+        '204':
+          description: Indica que o ping foi recebido com sucesso.
+        default:
+          description: Em caso de erro (status 4xx ou 5xx)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /status:
+    post:
+      description: Informa o status de disponibilidade do restaurante
+      requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      responses:
+        '204':
+          description: Indica que o ping foi recebido com sucesso.
+        default:
+          description: Em caso de erro (status 4xx ou 5xx)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    Status:
+      type: object
+      properties:
+        clientId:
+          description: Identificacao do cliente que está informando o estado da conexão
+          type: string
+        timestamp:
+          description: Timestamp com a data/hora local do status
+          type: string
+          format: date-time
+        status:
+          description: Status da disponibilidade do cliente
+          type: string
+          enum:
+          - AV
+          - UN
+      required:
+        - clientId
+        - timestamp
+
+    Error:
+      required:
+        - status
+        - msg
+      properties:
+        status:
+          type: integer
+        message:
+          type: string
