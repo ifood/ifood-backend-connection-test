@@ -53,7 +53,7 @@ rabbit.connect('amqp://' + RABBIT_HOST, (err, conn) => {
   if (!err) {
     LOG.info("RabbitMQ, eh nois!");
     conn.createChannel((err, ch) => {
-      ch.assertQueue(EVENT_CHANNEL_NAME);
+      ch.assertExchange(EVENT_CHANNEL_NAME, 'fanout', { durable: false });
       eventChannel = ch;
       __RABBIT_READY = true;
     });
@@ -89,7 +89,7 @@ let Utils = {
     if (!validEvent) {
       throw `O evento ${event.name} nao eh valido`;
     } else {
-      eventChannel.sendToQueue(EVENT_CHANNEL_NAME, new Buffer(JSON.stringify(event)));
+      eventChannel.publish(EVENT_CHANNEL_NAME, '', new Buffer(JSON.stringify(event)));
     }
   }
 };
