@@ -11,6 +11,15 @@ Array.apply(0,Array(MAX)).map( (v,i) => { return i+1; }).forEach( index => {
     };
 
     let obj = {
+        /**
+         * O atributo _id foi substituido pelo index para efeito de facilidade
+         * no uso do teste. Em situacoes reais, o ObjectID gerado pelo MonboDB
+         * tem uma serie de vantagens, e é quase que obrigatório em situações
+         * de particionamento.
+         */
+        "_id" : index,
+        // -------------------------------------------------------------------
+
         "name": "Restaurante " + index,
         "endereco": "Rua " + index + ", no. " + index,
         "grupo": grupos[Object.keys(grupos)
@@ -50,6 +59,14 @@ Array.apply(0,Array(MAX)).map( (v,i) => { return i+1; }).forEach( index => {
         };
 
         db.disponibilidade.insertOne(disponibilidade);
-        db.realtime_state.insertOne({restaurante_id: restaurantOid, state: 'CREATED', last_updated: now.getTime()});
+
+        let realtime_obj = {
+            restaurante_id : restaurantOid,
+            grupo: obj.grupo,
+            state: 'OFFLINE',
+            last_updated: now.getTime()
+        };
+
+        db.realtime_state.insertOne(realtime_obj);
     })();
 });
