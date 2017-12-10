@@ -1,3 +1,10 @@
+const os = require('process');
+
+const
+  REDIS_HOST = os.env.REDIS_HOST || 'localhost',
+  RABBIT_HOST = os.env.RABBIT_HOST || 'localhost';
+
+
 const express = require('express');
 const router = express.Router();
 const redis = require('redis');
@@ -7,7 +14,7 @@ const withobj = require('../helpers/with-obj').withObj;
 const which = require('../helpers/which').which;
 
 let redisClient = redis.createClient({
-  host: 'localhost',
+  host: REDIS_HOST,
   port: 6379
 });
 
@@ -48,7 +55,7 @@ evtSubscriber.on("pmessage", function (pattern, channel, message) {
 
 evtSubscriber.psubscribe("__key*__:*");
 
-rabbit.connect('amqp://localhost', (err, conn) => {
+rabbit.connect('amqp://' + RABBIT_HOST, (err, conn) => {
   if (!err) {
     LOG.info("RabbitMQ, eh nois!");
     conn.createChannel((err, ch) => {
