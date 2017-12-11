@@ -4,7 +4,7 @@ LOG.info("Log configured sucessfully");
 const express = require('express');
 const app = express();
 
-app.use(require("morgan")(( (app.get('env') === 'development') ? 'dev' : 'combined'), {"stream": LOG.stream}));
+// app.use(require("morgan")(( (app.get('env') === 'development') ? 'dev' : 'combined'), {"stream": LOG.stream}));
 
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
