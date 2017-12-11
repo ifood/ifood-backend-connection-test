@@ -1,3 +1,10 @@
+const os = require('process');
+
+const
+  RABBIT_HOST = os.env.RABBIT_HOST || 'localhost';
+
+const EVENT_CHANNEL_NAME = "STREAM_EVENT_AGGREGATOR";
+
 const LOG = require('../helpers/logger');
 const rabbit = require('amqplib/callback_api');
 const mongodb = require('../helpers/mongodb');
@@ -11,9 +18,7 @@ mongodb.connect()
     LOG.error("Falha ao conectar no MongoDB", err);
   });
 
-const EVENT_CHANNEL_NAME = "STREAM_EVENT_AGGREGATOR";
-
-rabbit.connect('amqp://localhost', (err, conn) => {
+rabbit.connect('amqp://' + RABBIT_HOST, (err, conn) => {
   if (!err) {
     LOG.info("RabbitMQ, eh nois!");
     conn.createChannel((err, ch) => {
