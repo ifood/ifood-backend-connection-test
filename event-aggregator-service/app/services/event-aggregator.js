@@ -23,65 +23,73 @@ let logSummary = {
   total_err: 0
 };
 
-rabbit.connect('amqp://' + RABBIT_HOST, (err, conn) => {
-  if (!err) {
-    LOG.info("Conectado ao RabbitMQ, aguardando mensagens");
-    conn.createChannel((err, ch) => {
-      ch.assertQueue(EVENT_CHANNEL_NAME);
+let conntrials = 0;
+let rabbitconn = setInterval(() => {
+  rabbit.connect('amqp://' + RABBIT_HOST, (err, conn) => {
+    if (!err) {
+      LOG.info(`Conectado ao RabbitMQ [${RABBIT_HOST}]`);
+      clearInterval(rabbitconn);
 
-      ch.consume(EVENT_CHANNEL_NAME, (msg) => {
+      if (!err) {
+        LOG.info("Conectado ao RabbitMQ, aguardando mensagens");
+        conn.createChannel((err, ch) => {
+          ch.assertQueue(EVENT_CHANNEL_NAME);
 
-        let event = JSON.parse(msg.content.toString());
-        LOG.debug(`Recebido evento ${JSON.stringify(event)}`);
+          ch.consume(EVENT_CHANNEL_NAME, (msg) => {
 
-        let aux = {
-          name: event.name,
-          timestamp: event.timestamp
-        };
+            let event = JSON.parse(msg.content.toString());
+            LOG.debug(`Recebido evento ${JSON.stringify(event)}`);
 
-        LOG.debug(`Evento a ser incluido: ${JSON.stringify(aux)}`);
+            let aux = {
+              name: event.name,
+              timestamp: event.timestamp
+            };
 
-        // TODO depois de contratado: separar por data.
-        collection.findOneAndUpdate(
-          { restaurante_id: event.clientId },
-          { $push: { eventos: aux } },
-          { returnOriginal: false },
-          (err, result) => {
-            if (!err) {
-              LOG.debug(`Registro alterado: ${JSON.stringify(result)}`);
+            LOG.debug(`Evento a ser incluido: ${JSON.stringify(aux)}`);
 
-              let events = result.value.eventos;
-              let tempos = calculaTempo(events);
+            // TODO depois de contratado: separar por data.
+            collection.findOneAndUpdate(
+              {restaurante_id: event.clientId},
+              {$push: {eventos: aux}},
+              {returnOriginal: false},
+              (err, result) => {
+                if (!err) {
+                  LOG.debug(`Registro alterado: ${JSON.stringify(result)}`);
 
-              collection.findOneAndUpdate(
-                {restaurante_id: event.clientId},
-                {
-                  $set : { tempo_online : tempos.tempo_online, tempo_offline : tempos.tempo_offline }
-                },
-                (err2, result2) => {
-                  if( !err2 ){
-                    LOG.debug(`Recalculo dos tempos - registro alterado: ${JSON.stringify(result2)}`);
-                    logSummary.total_ok++;
-                  } else {
-                    LOG.error("Falha ao tentar atualizar dados agregados de tempo", err);
-                    logSummary.total_err++;
-                  }
-                });
-            } else {
-              LOG.error("Falha ao tentar incluir evento na lista de eventos", err);
-              logSummary.total_err++;
-            }
-          });
+                  let events = result.value.eventos;
+                  let tempos = calculaTempo(events);
 
-      }, {noAck: true});
+                  collection.findOneAndUpdate(
+                    {restaurante_id: event.clientId},
+                    {
+                      $set: {tempo_online: tempos.tempo_online, tempo_offline: tempos.tempo_offline}
+                    },
+                    (err2, result2) => {
+                      if (!err2) {
+                        LOG.debug(`Recalculo dos tempos - registro alterado: ${JSON.stringify(result2)}`);
+                        logSummary.total_ok++;
+                      } else {
+                        LOG.error("Falha ao tentar atualizar dados agregados de tempo", err);
+                        logSummary.total_err++;
+                      }
+                    });
+                } else {
+                  LOG.error("Falha ao tentar incluir evento na lista de eventos", err);
+                  logSummary.total_err++;
+                }
+              });
+
+          }, {noAck: true});
 
 
-    });
-  } else {
-    LOG.error("Nao foi possivel conectar ao RabbitMQ. Saindo.", err);
-    process.exit(1);
-  }
-});
+        });
+      } else {
+        LOG.error("Falha ao tentar conectar no RabbitMQ [" + conntrials + "]", err);
+        conntrials++;
+      }
+    }
+  });
+}, 5000);
 
 let timer = setInterval(() => {
   let tok = logSummary.total_ok,
@@ -92,7 +100,7 @@ let timer = setInterval(() => {
     total_err: 0
   };
 
-  if( !tok && !terr ){
+  if (!tok && !terr) {
     LOG.info("Sem atividade nos ultimos 20s");
   } else {
     LOG.info(`Resumo dos ultimos 20s: Total de Erros: ${terr}, Total de eventos: ${tok + terr}`);
@@ -134,12 +142,12 @@ module.exports = {};
  * @param ev lista de eventos da base
  * @returns {{tempo_online: number, tempo_offline: number}}
  */
-function calculaTempo(ev){
+function calculaTempo(ev) {
 
   let ini = ev[0].timestamp;
   let eventos = ev.map(e => {
     return {
-      name : e.name,
+      name: e.name,
       timestamp: parseInt((e.timestamp - ini) / 1000)
     };
   });
@@ -147,12 +155,14 @@ function calculaTempo(ev){
   let tempo_total_relativo = eventos[eventos.length - 1].timestamp - eventos[0].timestamp;
 
   let soma = eventos
-    .filter(e => { return (e.name === 'ONLINE' || e.name === 'OFFLINE'); })
-    .reduce( (ant, at) => {
-      if( at.name === 'ONLINE' ){
+    .filter(e => {
+      return (e.name === 'ONLINE' || e.name === 'OFFLINE');
+    })
+    .reduce((ant, at) => {
+      if (at.name === 'ONLINE') {
         return {
           online: ant.online + at.timestamp,
-          offline : ant.offline
+          offline: ant.offline
         };
       } else {
         return {
@@ -161,13 +171,13 @@ function calculaTempo(ev){
         };
       }
 
-    }, { offline: 0, online: 0 } );
+    }, {offline: 0, online: 0});
 
   let valor = Math.abs(soma.online - soma.offline);
   let tempo_online = 0;
   let tempo_offline = 0;
 
-  if( soma.online > soma.offline ){
+  if (soma.online > soma.offline) {
     tempo_offline = valor;
     tempo_online = tempo_total_relativo - valor;
   } else {

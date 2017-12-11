@@ -31,18 +31,23 @@ redisClient.on('error', (err) => {
   LOG.error("Fail to connect to redis", err);
 });
 
-rabbit.connect('amqp://' + RABBIT_HOST, (err, conn) => {
+let conntrials = 0;
+let rabbitconn = setInterval(() => {
+  rabbit.connect('amqp://' + RABBIT_HOST, (err, conn) => {
   if (!err) {
-    LOG.info("RabbitMQ, eh nois!");
+    LOG.info(`Conectado ao RabbitMQ [${RABBIT_HOST}]`);
     conn.createChannel((err, ch) => {
       ch.assertExchange(EVENT_CHANNEL_NAME, 'fanout', { durable: false });
       eventChannel = ch;
       __RABBIT_READY = true;
+      clearInterval(rabbitconn);
     });
   } else {
-    LOG.error("RabbitMQ, nao eh nois =(", err);
+    LOG.error("Falha ao tentar conectar no RabbitMQ [" + conntrials + "]", err);
+    conntrials++;
   }
-});
+  });
+}, 5000);
 
 router.route('/available')
   .post((req, resp) => {
