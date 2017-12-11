@@ -1,0 +1,31 @@
+<div class="row suptopbar">
+  <div class="nine columns suptopbar suptopbar-left">&nbsp;</div>
+  <div class="three columns suptopbar suptopbar-right">
+    Autenticado como: <strong>{{model.username}}</strong>
+    desde às <strong>{{moment-format model.loggedIn 'HH:mm:ss'}}</strong>
+    | <a href="#" {{action "logout"}}>Sair {{fa-icon "sign-out"}}</a>
+  </div>
+</div>
+<div class="row">
+  <div class="twelve columns topbar">
+    <div class="three columns" style="text-align: center">
+      <img id="logo" src="/images/ifood-logo2.png"/>
+    </div>
+    <div class="six columns">
+      <ul class="inline">
+        <li>{{#link-to "home.realtime"}}Realtime{{/link-to}}</li>
+      </ul>
+      <ul class="inline">
+        <li>{{#link-to "home.ranking"}}Ranking{{/link-to}}</li>
+      </ul>
+    </div>
+    <div class="three columns u-pull-right" style="margin:0;">
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="twelve columns">
+    {{outlet}}
+  </div>
+</div>
+
