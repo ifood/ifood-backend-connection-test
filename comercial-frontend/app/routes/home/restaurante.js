@@ -1,103 +1,74 @@
 import Route from '@ember/routing/route';
 import moment from 'moment';
+import Ember from 'ember';
 
 export default Route.extend({
 
   model(params) {
 
-    let aux = {
-      "restaurante_id" : "105",
-      "data" : moment("2017-12-11T03:00:00.274Z").toISOString(),
-      "tempo_online" : 2784,
-      "tempo_offline" : 2916,
-      "eventos" : [
-          {
-            "name" : "OFFLINE",
-            "timestamp" : 1512961200274
+    return Ember.$.ajax('http://localhost:3003/v1/restaurante/' + params.id,{
+      success: (aux) => {
+
+        let sobra = calculaSobra(aux.eventos);
+        aux.tempo_online += sobra.ONLINE;
+        aux.tempo_offline += sobra.OFFLINE;
+
+        aux.tempo_online_fmt =  moment().startOf('day').seconds(aux.tempo_online).format('H:mm:ss');
+        aux.tempo_offline_fmt = moment().startOf('day').seconds(aux.tempo_offline).format('H:mm:ss');
+        aux.statusAtual = false;
+
+        aux.nome = "Restaurante " + aux.restaurante_id;
+        aux.eventos = aux.eventos.map(e => {
+          return {
+            name: translate(e.name),
+            date: moment(e.timestamp).format('DD/MM/YYYY HH:mm:ss')
           }
-        ]
-      };
-
-    aux.statusAtual = false;
-
-    let eventos = [
-        {
-          "name": "ONLINE",
-          "timestamp": 1512962387825
-        },
-        {
-          "name": "OFFLINE",
-          "timestamp": 1512962402893
-        },
-        {
-          "name": "ONLINE",
-          "timestamp": 1512962435866
-        },
-        {
-          "name": "AVAILABLE",
-          "timestamp": 1512962442311
-        },
-        {
-          "name": "UNAVAILABLE",
-          "timestamp": 1512962452192
-        },
-        {
-          "name": "AVAILABLE",
-          "timestamp": 1512962458598
-        },
-        {
-          "name": "OFFLINE",
-          "timestamp": 1512962470771
+        });
+        let sla = (aux.tempo_online * 100 / (aux.tempo_online + aux.tempo_offline));
+        if( isNaN(sla) ) {
+          aux.sla = "--";
+        } else {
+          aux.sla = Math.round( sla * 100 + Number.EPSILON ) / 100; /// (O.o) https://stackoverflow.com/questions/11832914/round-to-at-most-2-decimal-places-only-if-necessary
         }
-      ];
 
-    aux.nome = "Restaurante " + aux.restaurante_id;
-    aux.eventos = eventos.map(e => {
-        return {
-          name: translate(e.name),
-          date: moment(e.timestamp).format('DD/MM/YYYY HH:mm:ss')
-        }
-      });
-    let sla = (aux.tempo_online * 100 / (aux.tempo_online + aux.tempo_offline));
+        aux.chartConfig =  {
+          type: 'doughnut',
+          data: {
+            datasets: [{
+              data: [
+                aux.tempo_offline,
+                aux.tempo_online
+              ],
+              backgroundColor: [
+                '#B41D22',
+                '#008600',
+              ],
+              label: 'Online X Offline'
+            }],
+            labels: [
+              "Tempo Offline",
+              "Tempo Online"
+            ]
+          },
+          options: {
+            responsive: true,
+            legend: {
+              position: 'bottom',
+            },
+            title: {
+              display: false,
+            },
+            animation: {
+              animateScale: true,
+              animateRotate: true
+            }
+          }
+        };
 
-    aux.sla = Math.round( sla * 100 + Number.EPSILON ) / 100; /// (O.o) https://stackoverflow.com/questions/11832914/round-to-at-most-2-decimal-places-only-if-necessary
-
-    aux.chartConfig =  {
-      type: 'doughnut',
-      data: {
-        datasets: [{
-          data: [
-            aux.tempo_offline,
-            aux.tempo_online
-          ],
-          backgroundColor: [
-            '#B41D22',
-            '#008600',
-          ],
-          label: 'Online X Offline'
-        }],
-        labels: [
-          "Tempo Offline",
-          "Tempo Online"
-        ]
-      },
-      options: {
-        responsive: true,
-        legend: {
-          position: 'bottom',
-        },
-        title: {
-          display: false,
-        },
-        animation: {
-          animateScale: true,
-          animateRotate: true
-        }
+        return aux;
       }
-    };
+    });
 
-
-    return aux;
   }
 
 });
@@ -111,4 +82,18 @@ function translate(eventName){
   };
 
   return obj[eventName];
+}
+
+function calculaSobra(eventos){
+  let ret = {
+    'ONLINE':0,
+    'OFFLINE':0
+  };
+
+  let evtTime = eventos[eventos.length - 1].timestamp,
+      now = new Date().getTime();
+
+  ret[eventos[eventos.length - 1].name] = (now - evtTime) / 1000;
+
+  return ret;
 }
