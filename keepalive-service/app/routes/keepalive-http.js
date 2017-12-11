@@ -103,7 +103,7 @@ let Builders = {
 
   event(clientId, eventName, timestamp) {
     return withobj({})
-      .add('clientId', clientId)
+      .add('clientId', "" + clientId)
       .add('name', eventName)
       .add('timestamp', (timestamp) ? timestamp : new Date().getTime())
       .get();
