@@ -1,8 +1,8 @@
 <div class="row suptopbar">
   <div class="nine columns suptopbar suptopbar-left">&nbsp;</div>
   <div class="three columns suptopbar suptopbar-right">
-    Autenticado como: <strong>{{model.username}}</strong>
-    desde às <strong>{{moment-format model.loggedIn 'HH:mm:ss'}}</strong>
+    Usuário: <strong>{{model.username}}</strong>
+    Login às <strong>{{moment-format model.loggedIn 'HH:mm:ss'}}</strong>
     | <a href="#" {{action "logout"}}>Sair {{fa-icon "sign-out"}}</a>
   </div>
 </div>
