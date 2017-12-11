@@ -11,7 +11,7 @@ Router.map(function() {
   this.route('home', function() {
     this.route('realtime');
     this.route('ranking');
-    this.route('restaurante');
+    this.route('restaurante', {path: '/restaurante/:id'});
   });
 });
 
