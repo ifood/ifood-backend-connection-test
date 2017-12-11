@@ -54,8 +54,8 @@ Array.apply(0,Array(MAX)).map( (v,i) => { return i+1; }).forEach( index => {
         let disponibilidade = {
             restaurante_id: restaurantOid,
             data: now,
-            tempo_total_offline: 0,
-            tempo_total_indisponivel: 0,
+            tempo_online: 0,
+            tempo_offline: 0,
             eventos: eventos
         };
 
