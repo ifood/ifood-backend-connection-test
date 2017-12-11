@@ -48,8 +48,17 @@ Descaradamente copiado de http://bl.ocks.org/nbremer/6052814
   </div>
 </div>
 <div class="row">
+  <div class="three columns">
+    <strong>Visão em tempo real</strong>
+  </div>
+  <div class="nine columns">
+    {{fa-icon "circle" class="online"}} Online |
+    {{fa-icon "circle" class="offline"}} Offline |
+    {{fa-icon "circle" class="unavailable"}} Indisponível | <span id="restaurante-legenda" style="padding-left: 10px;">&nbsp;</span>
+  </div>
+</div>
+<div class="row">
   <div class="twelve columns">
-    <div id="restaurante-legenda" style="padding-left: 10px;">&nbsp;</div>
     <div id="container">
       <div id="chart"></div>
     </div>

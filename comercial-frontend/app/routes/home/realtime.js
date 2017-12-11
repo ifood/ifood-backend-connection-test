@@ -61,7 +61,7 @@ export default Route.extend({
 let colors = {
   'ONLINE': '#99FF63',
   'AVAILABLE': '#99FF63',
-  'OFFLINE': 'ff6864',
+  'OFFLINE': '#ff6864',
   'UNAVAILABLE': '#CCC'
 }
 

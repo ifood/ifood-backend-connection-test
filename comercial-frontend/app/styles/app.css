@@ -15,6 +15,18 @@ a {
   text-decoration: none;
 }
 
+i.online {
+  color: #99FF63;
+}
+
+i.offline {
+  color: #ff6864
+}
+
+i.unavailable {
+  color: #ccc
+}
+
 a:hover {
   color: white;
 }
