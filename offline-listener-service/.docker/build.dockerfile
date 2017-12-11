@@ -1,5 +1,5 @@
 # Baseado no Node 6 sobre Alpine Linux
-FROM mhart/alpine-node:6
+FROM mhart/alpine-node:8
 
 ### SETUP do Ambiente
 RUN apk add --no-cache make gcc g++ python bash
