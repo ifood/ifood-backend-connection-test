@@ -1,0 +1,73 @@
+<div class="row" style="padding-top: 50px">
+  <div class="one column">&nbsp;</div>
+  <div class="eleven columns">
+    <div class="row">
+      <div class="twelve" style="border-bottom: dotted 1px #333; margin-bottom: 20px">
+        <h5>Configuração de disponibilidade</h5>
+      </div>
+    </div>
+
+    <div class="six columns">
+      <div class="row text-center">
+        <div>
+          <button{{action "unavailable"}}>Tornar Indisponível</button><br/>
+          <small><i>Ao se tornar indisponível, nenhum pedido será enviado pelo iFood</i></small>
+        </div>
+      </div>
+      <div class="row text-center" style="padding-top: 50px">
+        <div>
+          <button{{action "available"}}>Voltar a ficar disponível</button><br/>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="five columns">
+        <p>
+          <strong>Motivo</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{#if model.noReasonError}}<span class="danger">{{fa-icon "hand-o-down"}} Necessário selecionar um motivo</span> {{/if}}
+        </p>
+        <ul class="inline">
+          <li>
+            <label>
+              {{radio-button
+                value="1"
+                groupValue=model.reason
+                changed="clearError"
+                name="reasons"}}
+              <span class="label-body">lack of delivery staff</span>
+            </label>
+          </li>
+          <li>
+            <label>
+              {{radio-button
+                value="2"
+                changed="clearError"
+                groupValue=model.reason
+                name="reasons"}}
+              <span class="label-body">connection issues (bad internet)</span>
+            </label>
+          </li>
+          <li>
+            <label>
+              {{radio-button
+                value="3"
+                changed="clearError"
+                groupValue=model.reason
+                name="reasons"}}
+              <span class="label-body">overloaded due to offline orders</span>
+            </label>
+          </li>
+          <li>
+            <label>
+              {{radio-button
+                value="4"
+                changed="clearError"
+                groupValue=model.reason
+                name="reasons"}}
+              <span class="label-body">holidays</span>
+            </label>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,11 +1,14 @@
 import Route from '@ember/routing/route';
 import Ember from 'ember';
+import { inject as service } from '@ember/service';
 
 Ember.LinkComponent.reopen({
   attributeBindings: ['data-badge']
 });
 
 export default Route.extend({
+
+  availability: service('availability'),
 
   session: {},
   timer: undefined,
@@ -59,6 +62,7 @@ export default Route.extend({
 
     logout(){
       clearInterval(this.timer);
+      sessionStorage.clear();
       this.transitionTo('/');
     }
 

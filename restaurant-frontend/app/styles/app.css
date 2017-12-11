@@ -15,6 +15,7 @@ a:hover {
   border: solid 1px #eee;
   background-color: whitesmoke;
   color: #B41D22;
+  margin: -3px 0 0 -20px;
 }
 
 img.online-icon {
@@ -154,11 +155,6 @@ ul.inline {
   padding: 0;
 }
 
-li {
-  float: left;
-  padding-right: 50px;
-}
-
 li a {
   display: block;
   color: antiquewhite;
@@ -258,4 +254,12 @@ div.card span.valor {
   color: red;
   font-weight: bolder;
   font-stretch: extra-expanded;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-center {
+  text-align: center;
 }

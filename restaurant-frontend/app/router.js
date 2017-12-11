@@ -10,6 +10,7 @@ Router.map(function() {
   this.route('login');
   this.route('home', function() {
     this.route('pedidos');
+    this.route('disponibilidade');
   });
 });
 
