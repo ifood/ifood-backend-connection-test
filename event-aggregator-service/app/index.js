@@ -23,7 +23,7 @@ app.use('/v1/dashboard/', routes.dashboard);
 app.use('/heartbeat', routes.heartbeat);
 
 // services and listeners
-require('./services/realtime-dashboard-aggregator');
+require('./services/event-aggregator');
 
 /* ERROR HANDLING */
 /// catch 404 and forward to error handler

@@ -1,0 +1,163 @@
+openapi: "3.0.0"
+info:
+  version: 0.0.1
+  title: "[UN]Availability Scheduler Service"
+  description: Servico responsavel por registrar agendamentos de disponibilidade/indisponibilidade dos restaurantes
+servers:
+  - url: http://localhost:3000
+
+paths:
+  /schedule:
+    post:
+      description: Registra um novo agendamento
+      requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+      responses:
+        '201':
+          description: Devolve um objeto com o ID do agendamento
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+        default:
+          description: Em caso de erro (status 4xx ou 5xx)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    get:
+      description: Recupera a lista de agendamentos de acordo com o filtro informado
+      parameters:
+        - name: restaurantId
+          in: query
+          description: Filtra pelo id do restaurante
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: limit
+          in: query
+          description: Numero maximo de resultados
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        200:
+          description: Lista de agendamentos conforme criterio
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Schedule'
+        403:
+          description: Caso o acesso aos dados do restaurante informado seja negado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Em caso de erro (status 4xx ou 5xx)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /schedule/{id}:
+    get:
+      description: Recupera um agendamento com base no ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: O objeto associado ao ID informado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+        403:
+          description: Caso o acesso seja negado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Em caso de erro (status 4xx ou 5xx)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      description: Remove um agendamento com base no ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        204:
+          description: O agendamento foi removido com sucesso
+        403:
+          description: Caso o acesso seja negado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Em caso de erro (status 4xx ou 5xx)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    Schedule:
+      type: object
+      properties:
+        id:
+          description: Identificador unico do agendamento
+          type: string
+        start:
+          description: Timestamp com a data/hora inicial do agendamento
+          type: string
+          format: date-time
+        end:
+          description: Timestamp com a data/hora final do agendamento
+          type: string
+          format: date-time
+        reason:
+          description: Motivo da indisponibilidade
+          type: string
+        type:
+          description: Tipo do agendamento -  "AV" para disponível, "UN" para indisponível. Default "UN"
+          type: string
+          enum:
+          - AV
+          - UN
+      required:
+        - start
+        - end
+
+
+    Error:
+      required:
+        - status
+        - msg
+      properties:
+        status:
+          type: integer
+        message:
+          type: string

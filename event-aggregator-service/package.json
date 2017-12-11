@@ -1,6 +1,6 @@
 {
-  "name": "comercial-backend-service",
-  "description": "Servico de backend do comercial",
+  "name": "event-aggregator-service",
+  "description": "Servico de agregacao de informacoes de online/offline",
   "version": "0.1.0",
   "private": true,
   "license": "UNLICENSED",
