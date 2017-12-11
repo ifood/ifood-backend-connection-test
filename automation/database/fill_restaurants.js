@@ -1,4 +1,5 @@
-let MAX = 100000;
+let MAX;
+MAX = 5000;
 
 //functional version
 Array.apply(0,Array(MAX)).map( (v,i) => { return i+1; }).forEach( index => {
@@ -42,7 +43,13 @@ Array.apply(0,Array(MAX)).map( (v,i) => { return i+1; }).forEach( index => {
     rest_insert.acknowledged && (() => {
     	let restaurantOid = rest_insert.insertedId;
         let now = new Date();
-        now.setHours(3,0,0);
+
+        /*
+        Para setar uma hora de corte (p/ex: 10 da manha e/ou 11pm, ajustar a
+        data do evento abaixo. Sem esse ajuste, a data de corte é a do momento
+        em que o script for executado.
+         */
+        // now.setHours(12,0,0);
 
         let createdEvent = {
             name: 'OFFLINE',
