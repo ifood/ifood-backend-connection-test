@@ -33,24 +33,31 @@ redisClient.on('error', (err) => {
   LOG.error("Fail to connect to redis", err);
 });
 
-rabbit.connect('amqp://' + RABBIT_HOST, (err, conn) => {
-  if (!err) {
-    LOG.info("RabbitMQ, eh nois!");
-    conn.createChannel((err, ch) => {
-      ch.assertExchange(EVENT_CHANNEL_NAME, 'fanout', { durable: false });
-      eventChannel = ch;
-      __RABBIT_READY = true;
-    });
-  } else {
-    LOG.error("RabbitMQ, nao eh nois =(", err);
-  }
-});
+let conntrials = 0;
+let rabbitconn = setInterval(() => {
+  rabbit.connect('amqp://' + RABBIT_HOST, (err, conn) => {
+    if (!err) {
+      LOG.info(`Conectado ao RabbitMQ [${RABBIT_HOST}]`);
+      conn.createChannel((err, ch) => {
+        ch.assertExchange(EVENT_CHANNEL_NAME, 'fanout', { durable: false });
+        eventChannel = ch;
+        __RABBIT_READY = true;
+        clearInterval(rabbitconn);
+      });
+    } else {
+      LOG.error("Falha ao tentar conectar no RabbitMQ [" + conntrials + "]", err);
+      conntrials++;
+    }
+  });
+}, 5000);
 
 
 router.route('/ping')
   .post((req, resp) => {
 
-    if (!__REDIS_READY) {
+    if (!__REDIS_READY || !__RABBIT_READY ) {
+      LOG.warn("Os componentes de estrutura (RabbitMQ e Redis) nao estão disponíveis no momento");
+
       resp.setRequestHeader('Retry-After', new Date(new Date().getTime() * 1000 * 10).toISOString());
       resp.status(503).send();
       return;
