@@ -4,9 +4,11 @@ import Ember from 'ember';
 
 export default Route.extend({
 
+  modelObj: {},
+
   model(params) {
 
-    return Ember.$.ajax('http://localhost:3003/v1/restaurante/' + params.id,{
+    this.modelObj = Ember.$.ajax('http://localhost:3003/v1/restaurante/' + params.id,{
       success: (aux) => {
 
         let sobra = calculaSobra(aux.eventos);
@@ -15,7 +17,11 @@ export default Route.extend({
 
         aux.tempo_online_fmt =  moment().startOf('day').seconds(aux.tempo_online).format('H:mm:ss');
         aux.tempo_offline_fmt = moment().startOf('day').seconds(aux.tempo_offline).format('H:mm:ss');
-        aux.statusAtual = false;
+        aux.statusAtual = Ember.$.ajax('http://localhost:3001/v1/status/' + params.id, {
+          complete: (xhr, status) => {
+            return status === 'success';
+          }
+        });
 
         aux.nome = "Restaurante " + aux.restaurante_id;
         aux.eventos = aux.eventos.map(e => {
@@ -68,6 +74,8 @@ export default Route.extend({
         return aux;
       }
     });
+
+    return this.modelObj;
 
   }
 

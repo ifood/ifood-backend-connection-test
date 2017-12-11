@@ -19,7 +19,7 @@
               SLA: {{model.sla}}%<br/>
             </td>
             <td>
-              {{#if model.statusAtual}}
+              {{#if (eq model.statusAtual.status 200)}}
                 {{fa-icon "circle" style="color:green"}} Online
               {{else}}
                 {{fa-icon "circle" style="color:#B41D22"}} Offline
