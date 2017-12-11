@@ -1,6 +1,6 @@
 {
-  "name": "restaurant-frontend",
-  "description": "Frontend para os restaurantes",
+  "name": "comercial-frontend",
+  "description": "Frontend para o time comercial",
   "main": "",
   "authors": [
     "Rafael <trestini@gmail.com>"
@@ -17,6 +17,7 @@
   ],
   "dependencies": {
     "skeleton": "skeleton-css#^2.0.4",
-    "pace": "^1.0.2"
+    "pace": "^1.0.2",
+    "d3": "^4.12.0"
   }
 }
