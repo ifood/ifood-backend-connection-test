@@ -17,7 +17,6 @@ app.use(cors());
 
 /* ***************************** ROUTE CONFIGURATION */
 const routes = require('./routes');
-app.use('/v1/dashboard/', routes.dashboard);
 
 /* HEALTH CHECK */
 app.use('/heartbeat', routes.heartbeat);
