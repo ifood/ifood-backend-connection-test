@@ -1,10 +1,30 @@
 /*  Application CSS ----------------------------------------------------------*/
 
+table.ranking a {
+  color: #333;
+}
 
+table.ranking a:hover {
+  color: black;
+  text-decoration: underline;
+
+}
 
 a {
   color: antiquewhite;
   text-decoration: none;
+}
+
+i.online {
+  color: #99FF63;
+}
+
+i.offline {
+  color: #ff6864
+}
+
+i.unavailable {
+  color: #ccc
 }
 
 a:hover {
@@ -67,6 +87,37 @@ div.suptopbar-right {
   color: whitesmoke;
   text-align: right;
   padding: 1px 20px 0 0;
+}
+
+div.subtopbar {
+  background-color: #333;
+  color: white;
+  height: 35px;
+}
+
+a.button-subtopbar {
+  border:none;
+  color:white;
+  height: 35px;
+}
+
+a.button-subtopbar:focus {
+  border: dotted 1px #ccc;
+  color:white;
+  font-weight: bolder;
+  background-color: #000;
+}
+
+a.button-subtopbar:hover {
+  border:none;
+  color:#ccc;
+  background-color: #000;
+}
+
+a.button-subtopbar:active {
+  color:white;
+  font-weight: bolder;
+  background-color: #000;
 }
 
 div.topbar {
@@ -151,8 +202,17 @@ ul.nav li {
 
 ul.inline {
   list-style-type: none;
-  margin-top: -4px;
+  margin-top: -14px;
   padding: 0;
+  display:inline;
+}
+
+ul.inline li {
+  margin-top: -9px;
+  padding: 0 30px 0 0;
+  color: #333;
+  display: inline;
+  float:left;
 }
 
 li a {
