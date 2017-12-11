@@ -18,36 +18,40 @@ mongodb.connect()
     LOG.error("Falha ao conectar no MongoDB", err);
   });
 
+let logSummary = {
+  total_ok: 0,
+  total_err: 0
+};
+
 rabbit.connect('amqp://' + RABBIT_HOST, (err, conn) => {
   if (!err) {
-    LOG.info("RabbitMQ, eh nois!");
+    LOG.info("Conectado ao RabbitMQ, aguardando mensagens");
     conn.createChannel((err, ch) => {
       ch.assertQueue(EVENT_CHANNEL_NAME);
 
       ch.consume(EVENT_CHANNEL_NAME, (msg) => {
 
         let event = JSON.parse(msg.content.toString());
-        LOG.debug(`[aggregator] recebido evento ${JSON.stringify(event)}`);
+        LOG.debug(`Recebido evento ${JSON.stringify(event)}`);
 
         let aux = {
           name: event.name,
           timestamp: event.timestamp
         };
 
-        LOG.debug(`[aggregator] Item a ser incluido: ${JSON.stringify(aux)}`);
+        LOG.debug(`Evento a ser incluido: ${JSON.stringify(aux)}`);
 
+        // TODO depois de contratado: separar por data.
         collection.findOneAndUpdate(
           { restaurante_id: event.clientId },
           { $push: { eventos: aux } },
           { returnOriginal: false },
           (err, result) => {
             if (!err) {
-              LOG.debug(`[aggregator] atual: ${JSON.stringify(result)}`);
+              LOG.debug(`Registro alterado: ${JSON.stringify(result)}`);
 
               let events = result.value.eventos;
               let tempos = calculaTempo(events);
-
-              console.log("-------\n", tempos, "\n-----------");
 
               collection.findOneAndUpdate(
                 {restaurante_id: event.clientId},
@@ -56,14 +60,16 @@ rabbit.connect('amqp://' + RABBIT_HOST, (err, conn) => {
                 },
                 (err2, result2) => {
                   if( !err2 ){
-                    console.log("Sucesso, Nerso: ", result2);
+                    LOG.debug(`Recalculo dos tempos - registro alterado: ${JSON.stringify(result2)}`);
+                    logSummary.total_ok++;
+                  } else {
+                    LOG.error("Falha ao tentar atualizar dados agregados de tempo", err);
+                    logSummary.total_err++;
                   }
                 });
-
-
-              LOG.info(`[aggregator] Registro de clientId ${event.clientId} atualizado. Result: ${result.ok}, event: ${event.name}`);
             } else {
-              LOG.error("MongoDB???? Ta me tirando? ", err);
+              LOG.error("Falha ao tentar incluir evento na lista de eventos", err);
+              logSummary.total_err++;
             }
           });
 
@@ -72,9 +78,27 @@ rabbit.connect('amqp://' + RABBIT_HOST, (err, conn) => {
 
     });
   } else {
-    LOG.error("RabbitMQ, nao eh nois =(", err);
+    LOG.error("Nao foi possivel conectar ao RabbitMQ. Saindo.", err);
+    process.exit(1);
   }
 });
+
+let timer = setInterval(() => {
+  let tok = logSummary.total_ok,
+    terr = logSummary.total_err;
+
+  logSummary = {
+    total_ok: 0,
+    total_err: 0
+  };
+
+  if( !tok && !terr ){
+    LOG.info("Sem atividade nos ultimos 20s");
+  } else {
+    LOG.info(`Resumo dos ultimos 20s: Total de Erros: ${terr}, Total de eventos: ${tok + terr}`);
+  }
+
+}, 20000);
 
 module.exports = {};
 
