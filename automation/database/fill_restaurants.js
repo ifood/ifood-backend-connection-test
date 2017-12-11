@@ -1,8 +1,6 @@
-let MAX;
-MAX = 5000;
+let MAX = 15000;
 
-//functional version
-Array.apply(0,Array(MAX)).map( (v,i) => { return i+1; }).forEach( index => {
+for( index = 1; index <= MAX; index++ ){
 
     const grupos = {
         1000: 'A',
@@ -19,7 +17,7 @@ Array.apply(0,Array(MAX)).map( (v,i) => { return i+1; }).forEach( index => {
          * tem uma serie de vantagens, e é quase que obrigatório em situações
          * de particionamento.
          */
-        "_id" : "" + index,
+        "_id": "" + index,
         // -------------------------------------------------------------------
 
         "name": "Restaurante " + index,
@@ -38,18 +36,13 @@ Array.apply(0,Array(MAX)).map( (v,i) => { return i+1; }).forEach( index => {
     };
 
     let rest_insert = db.restaurante_info.insertOne(obj, {w: 1});
-    print(obj.name + ", " + obj.grupo + " -> " + rest_insert.acknowledged);
+    if( rest_insert.insertedId % 5000 === 0 ){
+        print(rest_insert.insertedId + " incluidos");
+    }
 
-    rest_insert.acknowledged && (() => {
-    	let restaurantOid = rest_insert.insertedId;
+    if( rest_insert.acknowledged ) {
+        let restaurantOid = rest_insert.insertedId;
         let now = new Date();
-
-        /*
-        Para setar uma hora de corte (p/ex: 10 da manha e/ou 11pm, ajustar a
-        data do evento abaixo. Sem esse ajuste, a data de corte é a do momento
-        em que o script for executado.
-         */
-        // now.setHours(12,0,0);
 
         let createdEvent = {
             name: 'OFFLINE',
@@ -69,12 +62,16 @@ Array.apply(0,Array(MAX)).map( (v,i) => { return i+1; }).forEach( index => {
         db.disponibilidade.insertOne(disponibilidade);
 
         let realtime_obj = {
-            restaurante_id : restaurantOid,
+            restaurante_id: restaurantOid,
             grupo: obj.grupo,
             state: 'OFFLINE',
             last_updated: now.getTime()
         };
 
         db.realtime_state.insertOne(realtime_obj);
-    })();
-});
+    }
+
+}
+
+print(MAX + " incluidos");
+
