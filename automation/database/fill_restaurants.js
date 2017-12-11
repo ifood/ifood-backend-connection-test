@@ -1,5 +1,6 @@
-let MAX = 1002;
+let MAX = 100000;
 
+//functional version
 Array.apply(0,Array(MAX)).map( (v,i) => { return i+1; }).forEach( index => {
 
     const grupos = {
@@ -17,7 +18,7 @@ Array.apply(0,Array(MAX)).map( (v,i) => { return i+1; }).forEach( index => {
          * tem uma serie de vantagens, e é quase que obrigatório em situações
          * de particionamento.
          */
-        "_id" : index,
+        "_id" : "" + index,
         // -------------------------------------------------------------------
 
         "name": "Restaurante " + index,
@@ -44,7 +45,7 @@ Array.apply(0,Array(MAX)).map( (v,i) => { return i+1; }).forEach( index => {
         now.setHours(3,0,0);
 
         let createdEvent = {
-            name: 'CREATED',
+            name: 'OFFLINE',
             timestamp: now.getTime()
         };
 
