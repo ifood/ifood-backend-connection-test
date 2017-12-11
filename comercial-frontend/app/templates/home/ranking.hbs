@@ -1,1 +1,47 @@
-ranking
+<div class="row">
+  <div class="twelve columns">
+    <div class="one column">&nbsp;</div>
+    <div class="five columns text-center">
+      <h5>Top ranked</h5>
+      <table class="ranking" class="u-full-width">
+        <thead>
+        <tr>
+          <th>#</th>
+          <th>Restaurante</th>
+          <th>SLA</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#each model.topRanked as |rank|}}
+          <tr>
+            <td>{{rank.id}}</td>
+            <td>{{#link-to "home.restaurante" rank.id}}{{rank.nome}}{{/link-to}}</td>
+            <td>{{rank.sla}}%</td>
+          </tr>
+        {{/each}}
+        </tbody>
+      </table>
+    </div>
+    <div class="five columns text-center">
+      <h5>Get better, boys</h5>
+      <table class="u-full-width">
+        <thead>
+        <tr>
+          <th>#</th>
+          <th>Restaurante</th>
+          <th>SLA</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#each model.bottomRanked as |rank|}}
+          <tr>
+            <td>{{rank.id}}</td>
+            <td>{{rank.nome}}</td>
+            <td>{{rank.sla}}%</td>
+          </tr>
+        {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
