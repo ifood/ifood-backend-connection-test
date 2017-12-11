@@ -15,8 +15,6 @@ app.use(bodyParser.json());
 const cors = require('cors');
 app.use(cors());
 
-require('./services/event-consumer');
-
 /* ***************************** ROUTE CONFIGURATION */
 const routes = require('./routes');
 app.use('/v1/dashboard/', routes.dashboard);
@@ -24,6 +22,9 @@ app.use('/v1/dashboard/', routes.dashboard);
 /* HEALTH CHECK */
 app.use('/heartbeat', routes.heartbeat);
 
+// services and listeners
+require('./services/event-aggregator');
+require('./services/realtime-dashboard-aggregator');
 
 /* ERROR HANDLING */
 /// catch 404 and forward to error handler

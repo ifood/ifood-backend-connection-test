@@ -6,13 +6,13 @@ const socket = require('../helpers/socket');
 let collection;
 mongodb.connect()
   .then((db) => {
-    collection = db.collection('online');
+    collection = db.collection('realtime_state');
   })
   .catch((err) => {
     LOG.error("Falha ao conectar no MongoDB", err);
   });
 
-const EVENT_CHANNEL_NAME = "KEEPALIVE_EVENTS";
+const EVENT_CHANNEL_NAME = "STREAM_REALTIME_DASHBOARD";
 
 rabbit.connect('amqp://localhost', (err, conn) => {
   if (!err) {
@@ -22,22 +22,24 @@ rabbit.connect('amqp://localhost', (err, conn) => {
 
       ch.consume(EVENT_CHANNEL_NAME, (msg) => {
 
-        let obj = JSON.parse(msg.content.toString());
+        let event = JSON.parse(msg.content.toString());
+
+        LOG.debug("[realtime_state] Recebendo estado: " + event.name + ", para restid: " + event.clientId);
 
         collection.findOneAndUpdate(
           {
-            clientId: obj.clientId
+            restaurante_id: event.clientId
           },
           {
-            $set : { event : obj.event }
+            $set: {state: event.name, last_updated: event.timestamp}
           },
           {
             returnOriginal: false,
-            upsert: true
+            upsert: false
           }, (err, result) => {
-            if( !err ){
-              LOG.info(`Registro de clientId ${obj.clientId} atualizado. Result: ${result.ok}, event: ${obj.event}`);
-              socket.sender('updatechart', { id: obj.clientId, state: obj.event });
+            if (!err) {
+              LOG.info(`[realtime_state] Registro de clientId ${event.clientId} atualizado. Result: ${result.ok}, event: ${event.name}`);
+              socket.sender('updatechart', {id: event.clientId, state: event.name});
             } else {
               LOG.error("MongoDB???? Ta me tirando? ", err);
             }

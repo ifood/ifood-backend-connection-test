@@ -3,7 +3,7 @@ const winston = require('winston');
 const LOGGER = new winston.Logger({
   transports: [
     new winston.transports.Console({
-      level: 'warn',
+      level: 'debug',
       handleExceptions: true,
       json: false,
       colorize: true
