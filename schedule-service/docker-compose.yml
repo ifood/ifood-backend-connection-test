@@ -1,0 +1,29 @@
+version: '2'
+
+services:
+# ===================================================================
+  es6-express-app-skel:
+    container_name: es6-express-app-skel
+    hostname: es6-express-app-skel
+    image: es6-express-app-skel:dev
+
+    build:
+      context: .
+      dockerfile: .docker/development.dockerfile
+    volumes:
+      - .:/opt/app
+      - /opt/app/node_modules
+    ports:
+      - "3000:3000"
+    working_dir: /opt/app
+    environment:
+      - NODE_ENV=development
+    networks:
+      - app-private-network
+
+    entrypoint: npm run develop
+# ===================================================================
+networks:
+  app-private-network:
+    driver: bridge
+

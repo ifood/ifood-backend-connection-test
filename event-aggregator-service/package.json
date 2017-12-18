@@ -1,0 +1,40 @@
+{
+  "name": "event-aggregator-service",
+  "description": "Servico de agregacao de informacoes de online/offline",
+  "version": "0.1.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "NODE_ENV=production node bin/www",
+    "develop": "gulp develop",
+    "test": "mocha tests --recursive",
+    "coverage": "istanbul cover _mocha -- tests --recursive --reporter mocha-junit-reporter"
+  },
+  "dependencies": {
+    "amqplib": "^0.5.2",
+    "body-parser": "^1.18.2",
+    "cookie-parser": "^1.4.3",
+    "cors": "^2.8.4",
+    "debug": "^2.6.9",
+    "express": "^4.16.2",
+    "extend": "^3.0.1",
+    "mongodb": "^2.2.33",
+    "morgan": "^1.9.0",
+    "serve-favicon": "^2.4.5",
+    "shortid": "^2.2.8",
+    "socket.io": "^2.0.4",
+    "winston": "^2.4.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "^7.1.1",
+    "chai": "^3.5.0",
+    "eslint": "^3.13.1",
+    "eslint-plugin-babel": "^4.0.0",
+    "gulp": "~3.9.1",
+    "gulp-livereload": "~2.1.1",
+    "gulp-nodemon": "~1.0.4",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.2.0",
+    "mocha-junit-reporter": "^1.13.0"
+  }
+}

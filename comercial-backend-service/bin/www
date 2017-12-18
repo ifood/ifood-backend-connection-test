@@ -1,0 +1,13 @@
+#!/usr/bin/env node
+let application = require('../app/index');
+let express = application.app;
+let logger = application.logger;
+let socketio = require('socket.io');
+let socket = require('../app/helpers/socket');
+
+express.set('port', process.env.PORT || process.env.port || 3003);
+
+let server = express.listen(express.get('port'), function() {
+  logger.info('Express server listening on port ' + server.address().port);
+  socket.socketWrapper(socketio(server));
+});

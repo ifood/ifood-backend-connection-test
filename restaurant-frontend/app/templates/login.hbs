@@ -1,0 +1,56 @@
+
+<div class="row">
+  <div class="one-third column division-right">
+    <h5>Instruções</h5>
+    <p>
+      Existem 100 mil restaurantes cadastrados na base, que estão divididos em grupos, que em situações reais podem
+      representar regiões, grupos econômicos, grupos de interesse, etc. A divisão é feita conforme abaixo:
+    </p>
+
+    <ul class="u-cf">
+      <li>De 1 a 1000: Grupo 1</li>
+      <li>De 1001 a 10000: Grupo 2</li>
+      <li>De 10001 a 25000: Grupo 3</li>
+      <li>De 250001 a 50000: Grupo 4</li>
+      <li>De 500001 a 100000: Grupo 5</li>
+    </ul>
+
+    <p>
+      Para simular o login em um restaurante, utilize o usuario no formato <code>restaurante_INDICE</code>, onde
+      <code>INDICE</code> é o número do restaurante em questão.
+    </p>
+
+  </div>
+  <div class="two-thirds column">
+    <form autocomplete="off" {{action "auth" model on="submit"}}>
+      <div class="row">
+        <div class="three columns">&nbsp;</div>
+        <div class="five columns">
+          <label for="user">Usuário</label>
+          {{input id="user" class="u-full-width" value=model.username}}
+        </div>
+      </div>
+      <div class="row">
+        <div class="three columns">&nbsp;</div>
+        <div class="five columns">
+          <label for="pwd">Senha <small><i>(não utilizado aqui)</i></small></label>
+          {{input id="pwd" type="password" class="u-full-width" value=model.password}}
+        </div>
+      </div>
+      <div class="row">
+        <div class="three columns">&nbsp;</div>
+        <div class="five columns">
+          {{input type="submit" class="button-primary button-primary-red" value="Entrar"}}
+        </div>
+      </div>
+      <div class="row">
+        <div class="three columns">&nbsp;</div>
+        <div class="five columns">
+          <span class="text-warning">{{model.errorMessage}}</span>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+

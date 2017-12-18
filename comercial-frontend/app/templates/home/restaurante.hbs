@@ -1,0 +1,61 @@
+<div class="row">
+  <div class="twelve columns">
+    <div class="row">
+      <div class="one column">&nbsp;</div>
+      <div class="eight columns"><h5>Detalhes para <i>{{model.nome}}</i></h5></div>
+    </div>
+    <div class="row">
+      <div class="one column">&nbsp;</div>
+      <div class="five columns">
+        <table class="u-full-width">
+          <thead>
+          <tr>
+            <th colspan="2">Dados analíticos</th>
+          </tr>
+          <tr>
+            <td>
+              Tempo total online: {{model.tempo_online_fmt}}<br/>
+              Tempo total offline: {{model.tempo_offline_fmt}}<br/>
+              SLA: {{model.sla}}%<br/>
+            </td>
+            <td>
+              {{#if (eq model.statusAtual.status 200)}}
+                {{fa-icon "circle" style="color:green"}} Online
+              {{else}}
+                {{fa-icon "circle" style="color:#B41D22"}} Offline
+              {{/if}}
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              {{ember-chart
+                type=model.chartConfig.type
+                data=model.chartConfig.data
+                options=model.chartConfig.options
+              }}
+            </td>
+          </tr>
+          </thead>
+        </table>
+      </div>
+      <div class="five columns">
+        <table class="u-full-width">
+          <thead>
+          <tr>
+            <th>Evento</th>
+            <th>Data</th>
+          </tr>
+          </thead>
+          <tbody>
+          {{#each model.eventos as |evento|}}
+            <tr>
+              <td>{{evento.name}}</td>
+              <td>{{evento.date}}</td>
+            </tr>
+          {{/each}}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

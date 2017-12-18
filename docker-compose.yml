@@ -1,0 +1,172 @@
+version: '2'
+
+services:
+# MONGODB  ==========================================================
+  mongodb:
+    container_name: mongodb
+    hostname: mongodb
+    image: mongo
+    ports:
+      - "27017:27017"
+    networks:
+      - app-private-network
+    logging:
+      driver: none
+# RABBITMQ  =========================================================
+  rabbitmq:
+    container_name: rabbitmq
+    hostname: rabbitmq
+    image: rabbitmq:3-management
+    ports:
+      - 5672:5672
+      - 15672:15672
+    networks:
+      - app-private-network
+    logging:
+      driver: none
+# REDIS  ============================================================
+  redis:
+    container_name: redis
+    hostname: redis
+    image: redis
+    ports:
+      - 6379:6379
+    networks:
+      - app-private-network
+    logging:
+      driver: none
+# ===================================================================
+  keepalive-service:
+    container_name: keepalive-service
+    hostname: keepalive-service
+    image: keepalive-service:dev
+
+    build:
+      context: ./keepalive-service/
+      dockerfile: ./.docker/development.dockerfile
+    depends_on:
+      - rabbitmq
+      - redis
+    volumes:
+      - ./keepalive-service/:/opt/app
+      - /opt/app/node_modules
+    ports:
+      - "3000:3000"
+    working_dir: /opt/app
+    environment:
+      - NODE_ENV=production
+      - REDIS_HOST=redis
+      - RABBIT_HOST=rabbitmq      
+    networks:
+      - app-private-network
+
+    entrypoint: npm start
+# ===================================================================
+  status-service:
+    container_name: status-service
+    hostname: status-service
+    image: status-service:dev
+
+    build:
+      context: ./status-service/
+      dockerfile: ./.docker/development.dockerfile
+    depends_on:
+      - rabbitmq
+      - redis
+    volumes:
+      - ./status-service/:/opt/app
+      - /opt/app/node_modules
+    ports:
+      - "3001:3001"
+    working_dir: /opt/app
+    environment:
+      - NODE_ENV=production
+      - REDIS_HOST=redis
+      - RABBIT_HOST=rabbitmq      
+    networks:
+      - app-private-network
+
+    entrypoint: npm start
+# ===================================================================
+  offline-listener-service:
+    container_name: offline-listener-service
+    hostname: offline-listener-service
+    image: offline-listener-service:dev
+
+    build:
+      context: ./offline-listener-service/
+      dockerfile: ./.docker/development.dockerfile
+    depends_on:
+      - rabbitmq
+      - redis
+    volumes:
+      - ./offline-listener-service/:/opt/app
+      - /opt/app/node_modules
+    ports:
+      - "3002:3002"
+    working_dir: /opt/app
+    environment:
+      - NODE_ENV=production
+      - REDIS_HOST=redis
+      - RABBIT_HOST=rabbitmq      
+    networks:
+      - app-private-network
+
+    entrypoint: npm start
+# ===================================================================
+  comercial-backend-service:
+    container_name: comercial-backend-service
+    hostname: comercial-backend-service
+    image: comercial-backend-service:dev
+
+    build:
+      context: ./comercial-backend-service/
+      dockerfile: ./.docker/development.dockerfile
+    depends_on:
+      - rabbitmq
+      - redis
+    volumes:
+      - ./comercial-backend-service/:/opt/app
+      - /opt/app/node_modules
+    ports:
+      - "3003:3003"
+    working_dir: /opt/app
+    environment:
+      - NODE_ENV=production
+      - RABBIT_HOST=rabbitmq
+      - DATASTORE_SERVER=mongodb
+    networks:
+      - app-private-network
+
+    entrypoint: npm start
+# ===================================================================
+  event-aggregator-service:
+    container_name: event-aggregator-service
+    hostname: event-aggregator-service
+    image: event-aggregator-service:dev
+
+    build:
+      context: ./event-aggregator-service/
+      dockerfile: ./.docker/development.dockerfile
+    depends_on:
+      - rabbitmq
+      - redis
+    volumes:
+      - ./event-aggregator-service/:/opt/app
+      - /opt/app/node_modules
+    ports:
+      - "3004:3004"
+    working_dir: /opt/app
+    environment:
+      - NODE_ENV=production
+      - RABBIT_HOST=rabbitmq    
+      - DATASTORE_SERVER=mongodb  
+    networks:
+      - app-private-network
+
+    entrypoint: npm start
+# ===================================================================
+networks:
+  app-private-network:
+    driver: bridge
+

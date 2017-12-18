@@ -1,0 +1,35 @@
+
+<div class="row">
+  <div class="twelve column">
+    <form autocomplete="off" {{action "auth" model on="submit"}}>
+      <div class="row">
+        <div class="three columns">&nbsp;</div>
+        <div class="five columns">
+          <label for="user">Usuário</label>
+          {{input id="user" class="u-full-width" value=model.username}}
+        </div>
+      </div>
+      <div class="row">
+        <div class="three columns">&nbsp;</div>
+        <div class="five columns">
+          <label for="pwd">Senha <small><i>(não utilizado aqui)</i></small></label>
+          {{input id="pwd" type="password" class="u-full-width" value=model.password}}
+        </div>
+      </div>
+      <div class="row">
+        <div class="three columns">&nbsp;</div>
+        <div class="five columns">
+          {{input type="submit" class="button-primary button-primary-red" value="Entrar"}}
+        </div>
+      </div>
+      <div class="row">
+        <div class="three columns">&nbsp;</div>
+        <div class="five columns">
+          <span class="text-warning">{{model.errorMessage}}</span>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+

@@ -1,0 +1,66 @@
+<!--
+Descaradamente copiado de http://bl.ocks.org/nbremer/6052814
+-->
+
+<style type="text/css">
+  .hexagon {
+    fill: #FFF;
+  }
+
+  .header {
+    margin-top: 20px;
+    margin-left: 20px;
+    font-size: 36px;
+    font-weight: 300;
+    display: block;
+    z-index: 1;
+    text-shadow: 0 1px 0 #fff;
+  }
+  .hint {
+    width: 1280px;
+    right: 0px;
+    color: rgb(153, 153, 153);
+    font-size: 12px;
+    padding-bottom: 20px;
+  }
+
+  #chart {
+    text-align: center;
+    margin: 10px;
+    border: dotted 1px #CCC;
+  }
+
+  .hr-style {
+    border: 0;
+    height: 2px;
+    width: 95%;
+    color: #E8E8E8;
+    background-color: #E8E8E8;
+  }
+</style>
+<div class="row" class="subtopbar">
+  <div class="twelve columns">
+    {{#each model.grupos as |grupo|}}
+      <div class="two columns text-center">
+        <a href="#" {{action "selectGrupo" grupo}} class="button u-full-width button-subtopbar">Grupo {{grupo}}</a>
+      </div>
+    {{/each}}
+  </div>
+</div>
+<div class="row">
+  <div class="three columns">
+    <strong>Visão em tempo real</strong>
+  </div>
+  <div class="nine columns">
+    {{fa-icon "circle" class="online"}} Online |
+    {{fa-icon "circle" class="offline"}} Offline |
+    {{fa-icon "circle" class="unavailable"}} Indisponível | <span id="restaurante-legenda" style="padding-left: 10px;">&nbsp;</span>
+  </div>
+</div>
+<div class="row">
+  <div class="twelve columns">
+    <div id="container">
+      <div id="chart"></div>
+    </div>
+  </div>
+</div>

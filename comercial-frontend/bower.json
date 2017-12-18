@@ -1,0 +1,23 @@
+{
+  "name": "comercial-frontend",
+  "description": "Frontend para o time comercial",
+  "main": "",
+  "authors": [
+    "Rafael <trestini@gmail.com>"
+  ],
+  "license": "UNLICENSED",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "skeleton": "skeleton-css#^2.0.4",
+    "pace": "^1.0.2",
+    "d3": "^4.12.0"
+  }
+}
