@@ -19,24 +19,28 @@ Fork this repository and submit your code.
 
 * In iFood Platform, the opening hour for the Restaurants are from 10:00 am to 11:00 pm.
 * A Restaurant may be **available**/**unavailable**.
-* A Restaurant may scheduled the status **unavailable**, due to the following reasons:
+* A Restaurant may schedule an **unavailable** status due to the following reasons:
   - lack of delivery staff
   - connection issues (bad internet)<sup>1</sup>
   - overloaded due to offline orders
   - holidays
 * A Restaurant may also be **online**/**offline**:
-  - In order to a Restaurant be considered **online**, it must be inside the opening hour AND have interacted with our platform (aka sent a keep-alive signal) in the last two minutes AND its status should be **available**. Otherwise, it should be considered **offline**.
-* The Restaurants are ranked according to the time they spent **offline**, inside the opening hour, without a scheduled **unavailability**.
+  - In order to a Restaurant be considered **online**, it must be inside the opening hours AND have interacted with our platform (aka sent a keep-alive signal) in the last two minutes AND its status must be **available**. Otherwise, it should be considered **offline**.
+* The Restaurants are ranked according to the time they spent **offline**, inside the opening hours and without a scheduled **unavailability**.
 * Example:
 ![restaurant connection timeline](https://www.lucidchart.com/publicSegments/view/4d48ac9c-e543-4531-abd5-eff0d9788ea6/image.png)
 
 ## Requirements
 
-In order to handle 100.000 simultaneously connections, we would like to use an IOT protocol (like MQTT or XMPP) for this scenario.
+We are talking about 100.000 restaurants and the online/offline information must be precise and timely. Please, consider using other protocols than HTTP in this communication scenario, such as MQTT or XMPP.
 
-You will have to keep the connection state of the Restaurants freshly available for whoever wants to query it. We advise the use of some type of compute grid to do this processing in parallel by the instances of the service. Apache Ignite might be a good choice. Or not.
+You will have to keep the connection state of the Restaurants freshly available for whoever wants to query it. Make sure you do it in a way that scales. We advise the use of some type of compute grid to do this processing in parallel by the instances of the service. Apache Ignite might be a good choice. Or not.
 
 This service needs to answer promptly:
 * Given a list of Restaurants, whether they are **online** or **offline**.
 * Given a specific Restaurant, its unavailability history.
 * Reports for iFood commercial team so they can measure how our Restaurants are ranked, according to the amount of time they spent **offline** (see the diagram above, the red section on the "Restaurant Status" timeline).
+
+We expect your solution to be bundled in a way that we can easily run it locally, with a simple readme containing the rationale behind your implementation decisions and the steps needed to run it. Consider using some container/VM solution for that.
+
+Once ready, share your code with us!
