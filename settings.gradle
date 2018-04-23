@@ -1,0 +1,6 @@
+rootProject.name = 'ifood-connection'
+
+include ":client"
+include ":interface"
+include ":model"
+include ":infrastructure"

@@ -1,0 +1,147 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath(
+                'org.springframework.boot:spring-boot-gradle-plugin:1.5.10.RELEASE'
+        )
+    }
+}
+
+ext {
+    springBootVersion = '1.5.10.RELEASE'
+    springIntegration = '5.0.3.RELEASE'
+    springfoxSwagger = '2.8.0'
+    apacheIgnite = '2.4.0'
+}
+
+subprojects {
+    repositories {
+        mavenCentral()
+    }
+
+    apply plugin: 'java'
+
+    dependencies {
+        compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
+        compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.8.5'
+        compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.4.0")
+
+        testCompile group: 'junit', name: 'junit', version: '4.12'
+    }
+
+    configurations {
+        sourceCompatibility = 1.9
+        targetCompatibility = 1.9
+
+        compileJava.options.encoding = 'UTF-8'
+        compileTestJava.options.encoding = 'UTF-8'
+
+        acceptanceTestCompile.extendsFrom testCompile
+        acceptanceTestRuntime.extendsFrom testRuntime
+    }
+
+    sourceSets {
+        acceptanceTest {
+            java {
+                compileClasspath += main.output + test.output
+                runtimeClasspath += main.output + test.output
+                srcDir file('src/acceptanceTest/java')
+            }
+        }
+    }
+
+    task acceptanceTest(type: Test) {
+        setTestClassesDirs(sourceSets.acceptanceTest.output.getClassesDirs())
+        classpath = sourceSets.acceptanceTest.runtimeClasspath
+
+        testLogging {
+            events "passed", "skipped", "failed"
+        }
+    }
+
+}
+
+project(":client"){
+    dependencies{
+        compile group: 'org.eclipse.paho', name: 'org.eclipse.paho.client.mqttv3', version: '1.1.0'
+    }
+}
+
+project(":interface"){
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+
+    bootRun {
+        doFirst { //Added due to the java9 modules needs (It is necessary because ApacheIgnite)
+            jvmArgs= [
+                     '--add-exports', 'java.base/jdk.internal.misc=ALL-UNNAMED'
+                    , '--add-exports', 'java.base/sun.nio.ch=ALL-UNNAMED'
+                    , '--add-exports', 'java.management/com.sun.jmx.mbeanserver=ALL-UNNAMED'
+                    , '--add-exports', 'jdk.internal.jvmstat/sun.jvmstat.monitor=ALL-UNNAMED'
+                    , '--add-modules', 'java.xml.bind'
+            ]
+        }
+    }
+
+    acceptanceTest {
+        doFirst { //Added due to the java9 modules needs (It is necessary because ApacheIgnite)
+            jvmArgs= [
+                    '--add-exports', 'java.base/jdk.internal.misc=ALL-UNNAMED'
+                    , '--add-exports', 'java.base/sun.nio.ch=ALL-UNNAMED'
+                    , '--add-exports', 'java.management/com.sun.jmx.mbeanserver=ALL-UNNAMED'
+                    , '--add-exports', 'jdk.internal.jvmstat/sun.jvmstat.monitor=ALL-UNNAMED'
+                    , '--add-modules', 'java.xml.bind'
+                ]
+            }
+    }
+
+    dependencies {
+        compile group:'org.springframework.boot', name: 'spring-boot-starter-web', version: springBootVersion
+        compile group:'org.springframework.boot', name: 'spring-boot-starter-integration', version: springBootVersion
+
+        compile group:'org.springframework.integration', name: 'spring-integration-mqtt', version: springIntegration
+        compile group:'org.springframework.integration', name: 'spring-integration-stream', version: springIntegration
+
+        compile group:'io.springfox', name: 'springfox-swagger2', version: springfoxSwagger
+        compile group:'io.springfox', name: 'springfox-swagger-ui', version: springfoxSwagger
+
+        compile group: 'org.eclipse.paho', name: 'org.eclipse.paho.client.mqttv3', version: '1.1.0'
+
+        compile group: 'org.apache.ignite', name: 'ignite-core', version: apacheIgnite
+        compile group: 'org.apache.ignite', name: 'ignite-spring', version: apacheIgnite
+        compile group: 'org.apache.ignite', name: 'ignite-spring-data', version: apacheIgnite
+        compile group: 'org.apache.ignite', name: 'ignite-indexing', version: apacheIgnite
+        compile group: 'org.apache.ignite', name: 'ignite-slf4j', version: apacheIgnite
+
+        compile project(":model")
+
+        testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: springBootVersion
+        testCompile group: 'com.jayway.restassured', name: 'rest-assured', version: '2.9.0'
+    }
+}
+
+project(":model"){
+
+    dependencies{
+        compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: springBootVersion
+        compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
+        compile project(":infrastructure")
+    }
+}
+
+project(":infrastructure"){
+
+    dependencies {
+        compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: springBootVersion
+        compile group: 'org.apache.ignite', name: 'ignite-core', version: apacheIgnite
+        compile group: 'org.apache.ignite', name: 'ignite-spring', version: apacheIgnite
+        compile group: 'org.apache.ignite', name: 'ignite-spring-data', version: apacheIgnite
+        compile group: 'org.apache.ignite', name: 'ignite-indexing', version: apacheIgnite
+        compile group: 'org.apache.ignite', name: 'ignite-slf4j', version: apacheIgnite
+
+    }
+}
