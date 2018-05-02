@@ -27,6 +27,12 @@ public class StatusResourceTest {
     @TestConfiguration
     static class StatusResourceTestConfiguration {
 
+        @MockBean
+        private IgniteCache<String, StatusEntity> cache;
+
+        @MockBean
+        private StatusRepository statusRepository;
+
         @Bean
         public StatusResource employeeService() {
             return new StatusResource(cache, statusRepository);
@@ -34,11 +40,11 @@ public class StatusResourceTest {
 
     }
 
-    @MockBean
-    private static IgniteCache<String, StatusEntity> cache;
+    @Autowired
+    private IgniteCache<String, StatusEntity> cache;
 
-    @MockBean
-    private static StatusRepository statusRepository;
+    @Autowired
+    private StatusRepository statusRepository;
 
     @Autowired
     private StatusResource statusResource;
@@ -47,21 +53,18 @@ public class StatusResourceTest {
     public void setup() {
         StatusEntity statusOnline = StatusEntity.builder().type(ONLINE).build();
 
-        Mockito.when(cache.get(CacheUtil.buildStatusCacheKey(1L))).thenReturn(statusOnline);
-        Mockito.when(cache.get(CacheUtil.buildStatusCacheKey(2L))).thenReturn(null);
-        Mockito.when(cache.get(CacheUtil.buildStatusCacheKey(3L))).thenReturn(statusOnline);
-        Mockito.when(cache.get(CacheUtil.buildStatusCacheKey(4L))).thenReturn(null);
-        Mockito.when(cache.get(CacheUtil.buildStatusCacheKey(5L))).thenReturn(statusOnline);
+        Mockito.doReturn(statusOnline).when(cache).get(CacheUtil.buildStatusCacheKey(1L));
+        Mockito.doReturn(null).when(cache).get(CacheUtil.buildStatusCacheKey(2L));
+        Mockito.doReturn(statusOnline).when(cache).get(CacheUtil.buildStatusCacheKey(3L));
+        Mockito.doReturn(null).when(cache).get(CacheUtil.buildStatusCacheKey(4L));
+        Mockito.doReturn(statusOnline).when(cache).get(CacheUtil.buildStatusCacheKey(5L));
 
-        Mockito.when(statusRepository.findSpecificSchedule(Mockito.eq(1L), Mockito.any()))
-            .thenReturn
-                (Optional.of(statusOnline));
-        Mockito.when(statusRepository.findSpecificSchedule(Mockito.eq(3L), Mockito.any()))
-            .thenReturn
-                (Optional.of(statusOnline));
-        Mockito.when(statusRepository.findSpecificSchedule(Mockito.eq(5L), Mockito.any()))
-            .thenReturn
-                (Optional.of(statusOnline));
+        Mockito.doReturn(Optional.empty()).when(statusRepository).findSpecificSchedule
+            (Mockito.eq(1L), Mockito.any());
+        Mockito.doReturn(Optional.empty()).when(statusRepository).findSpecificSchedule
+            (Mockito.eq(3L), Mockito.any());
+        Mockito.doReturn(Optional.empty()).when(statusRepository).findSpecificSchedule
+            (Mockito.eq(5L), Mockito.any());
     }
 
     @Test
