@@ -1,0 +1,35 @@
+version: "3.6"
+services:
+
+  db:
+    image: mysql/mysql-server:5.7
+    container_name: mysql_connection
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: "connection"
+      MYSQL_USER: "usr"
+      MYSQL_PASSWORD: "1qaz2wsx"
+      MYSQL_ROOT_PASSWORD: "1qaz2wsx"
+
+  ignite:
+    image: apacheignite/ignite:2.4.0
+    container_name: ignite_connection
+    ports:
+      - "47500-47600"
+      - "47100-47200"
+    network_mode: "host"
+    volumes:
+      - ~/apache_ignite/config/config.xml:/opt/ignite/apache-ignite-fabric/config/config.xml
+    environment:
+      CONFIG_URI: file:///opt/ignite/apache-ignite-fabric/config/config.xml
+      IGNITE_QUIET: "false"
+
+  mosquitto:
+    image: eclipse-mosquitto:1.4.12
+    container_name: mosquitto_connection
+    ports:
+      - "1883:1883"
+    volumes:
+      - ~/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ~/mosquitto/data:/mosquitto/data
