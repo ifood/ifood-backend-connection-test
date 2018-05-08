@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/unavailability", produces = APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
-public class UnavailabilityResource {
+public class UnavailabilityController {
 
     private final StatusRepository statusRepository;
 

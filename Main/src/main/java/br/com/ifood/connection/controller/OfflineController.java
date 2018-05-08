@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/offlines", produces = APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
-public class OfflineResource {
+public class OfflineController {
 
     private final Ignite ignite;
 

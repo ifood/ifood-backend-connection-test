@@ -22,7 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.Assert;
 
 @RunWith(SpringRunner.class)
-public class StatusResourceTest {
+public class StatusControllerTest {
 
     @TestConfiguration
     static class StatusResourceTestConfiguration {
@@ -34,8 +34,8 @@ public class StatusResourceTest {
         private StatusRepository statusRepository;
 
         @Bean
-        public StatusResource employeeService() {
-            return new StatusResource(cache, statusRepository);
+        public StatusController employeeService() {
+            return new StatusController(cache, statusRepository);
         }
 
     }
@@ -47,7 +47,7 @@ public class StatusResourceTest {
     private StatusRepository statusRepository;
 
     @Autowired
-    private StatusResource statusResource;
+    private StatusController statusController;
 
     @Before
     public void setup() {
@@ -73,7 +73,7 @@ public class StatusResourceTest {
 
         String paramIds = "1,2,3,4,5";
 
-        OnlineStatusResponse onlineStatus = statusResource.getOnlineStatus(paramIds);
+        OnlineStatusResponse onlineStatus = statusController.getOnlineStatus(paramIds);
 
         List<Boolean> status = onlineStatus.getStatus();
 
