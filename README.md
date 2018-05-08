@@ -31,3 +31,36 @@ schedule parameter from command line
 
 The application is configured with Flyway, once the application is booted it's goind to create the
 tables and initiaze with 5 restaurants for test purposes.
+
+
+## Docker
+
+The docker compose file configures 3 containers:
+- MySQL
+- Eclipse Mosquitto
+- Apache Ignite
+
+For MySQL:
+- Exposes the port 3306 on the host
+- Creates a schema called 'connection'
+- Sets the default password for root
+- Creates and sets the password for the application's user
+
+For Apache Ignite:
+- Exposes the range of ports 47500-47600 and 47100-47200
+- Configures the network in mode 'host'
+- Mounts the file main/resources/docker/config/ignite/config.xml as the config
+- Disables the quiet mode for logging
+
+For Eclipse Mosquitto:
+- Exposes the port 1883 on the host
+- Mounts the file main/resources/docker/config/mosquitto/mosquitto.conf as the config
+- Mounts the directory in the environment variable MOSQUITTO_DATA as the data directory
+
+To change the data directory for Eclipse Mosquitto you have three options:
+- Modify the variable MOSQUITTO_DATA in the file .env in projects' root directory
+- Create a environment variable or just for the shell called MOSQUITTO_DATA with the directory as value
+- Pass the variable with the -e VARIABLE=VALUE option
+
+*For more information please check docker-compose's documentation:
+https://docs.docker.com/compose/environment-variables/*
