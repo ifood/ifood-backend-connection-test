@@ -29,9 +29,9 @@ repositories {
 }
 
 dependencies {
-    compileOnly("org.projectlombok:lombok:1.16.16")
+    compileOnly("org.projectlombok:lombok:1.16.20")
 
-    compile ('com.h2database:h2:1.4.195')
+    compile('com.h2database:h2:1.4.195')
 
     compile('org.springframework.boot:spring-boot-starter-web') {
         exclude module: "spring-boot-starter-tomcat"
@@ -52,7 +52,7 @@ dependencies {
     compile('org.apache.ignite:ignite-indexing:2.4.0')
 
     compile('io.springfox:springfox-swagger-ui:2.7.0')
-    compile ('io.springfox:springfox-swagger2:2.7.0')
+    compile('io.springfox:springfox-swagger2:2.7.0')
 
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
