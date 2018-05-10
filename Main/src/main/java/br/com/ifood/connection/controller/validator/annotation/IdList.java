@@ -23,7 +23,7 @@ import br.com.ifood.connection.controller.validator.IdsListValidator;
 @Target({ ElementType.PARAMETER })
 public @interface IdList {
 
-    String message() default "Ids list is invalid.";
+    String message() default "Ids list is invalid";
 
     Class<?>[] groups() default {};
 

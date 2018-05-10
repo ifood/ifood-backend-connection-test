@@ -1,0 +1,29 @@
+# MQTT
+mqtt:
+  hostname: 'tcp://localhost'
+  port: 1883
+  topic:
+    qos: 2
+    connection: 'ifood/restaurant/connection'
+    schedule: 'ifood/restaurant/schedule'
+    unschedule: 'ifood/restaurant/unschedule'
+    lastwill: 'ifood/restaurant/lastwill'
+
+# Spring Data
+spring:
+  datasource:
+    url: 'jdbc:mysql://localhost:3306/connection?erifyServerCertificate=false&useSSL=false&requireSSL=false'
+    username: 'usr'
+    password: '1qaz2wsx'
+    driver-class-name: com.mysql.jdbc.Driver
+    validation-query: 'SELECT 1 FROM DUAL'
+
+# APP properties
+
+# Threshold in seconds to consider client offline
+app:
+  offline:
+    threshold: 5
+  cache:
+    restaurants:
+      status: 'restaurants-status'
