@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
+ * Object to hold the error message that gets returned from the controllers
+ *
  * @author pnakano
  * @version $Revision: $<br/>
  *          $Id: $

@@ -26,4 +26,4 @@ app:
     threshold: 5
   cache:
     restaurants:
-      status: 'restaurants-status'
+      status: 'online-status-cache'

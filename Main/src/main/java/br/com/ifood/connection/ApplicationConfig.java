@@ -14,12 +14,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.integration.annotation.IntegrationComponentScan;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 
 import br.com.ifood.connection.cache.policy.OnlineStatusExpirePolicy;
-import br.com.ifood.connection.controller.exception.handler.ExceptionHandlerConfig;
 import br.com.ifood.connection.data.entity.StatusEntity;
 import br.com.ifood.connection.data.repository.StatusRepository;
 import br.com.ifood.connection.mqtt.message.converter.RestaurantMessageConverter;
@@ -32,7 +30,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @IntegrationComponentScan
 @EnableSwagger2
-@Import({ ExceptionHandlerConfig.class })
 public class ApplicationConfig {
 
     @Value("${app.cache.restaurants.status}")
@@ -56,7 +53,7 @@ public class ApplicationConfig {
     }
 
     @Bean
-    @Qualifier(value = "restaurants-status")
+    @Qualifier("${app.cache.restaurants.status}")
     public IgniteCache<String, StatusEntity> getOnlineStatusCache(Ignite ignite) {
         CacheConfiguration<String, StatusEntity> cfg = new CacheConfiguration<String, StatusEntity>(
                 cacheRestaurantsStatus)
@@ -75,6 +72,7 @@ public class ApplicationConfig {
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
+                .useDefaultResponseMessages(false)
                 .select()
                 .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.any())
