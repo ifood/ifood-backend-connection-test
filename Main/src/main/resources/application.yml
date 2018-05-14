@@ -9,6 +9,7 @@ mqtt:
     unschedule: 'ifood/restaurant/unschedule'
     lastwill: 'ifood/restaurant/lastwill'
 
+
 # Spring Data
 spring:
   datasource:
@@ -17,6 +18,15 @@ spring:
     password: '1qaz2wsx'
     driver-class-name: com.mysql.jdbc.Driver
     validation-query: 'SELECT 1 FROM DUAL'
+  data:
+    web:
+      pageable:
+        one-indexed-parameters: true
+        default-page-size: 5
+        max-page-size: 20
+        page-parameter: 'page'
+        size-parameter: 'limit'
+
 
 # APP properties
 
@@ -27,3 +37,4 @@ app:
   cache:
     restaurants:
       status: 'online-status-cache'
+

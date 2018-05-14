@@ -1,11 +1,24 @@
-plugins {
-    id 'java'
-}
-
 group 'br.com.ifood.connection'
 version '1.0-SNAPSHOT'
 
-sourceCompatibility = 1.8
+apply plugin: 'idea'
+apply plugin: 'application'
+
+/**
+ * Java
+ */
+sourceCompatibility = '1.8'
+
+targetCompatibility = '1.8'
+
+/**
+ * Application
+ */
+mainClassName = "Client"
+
+run {
+    args = ["schedule"]
+}
 
 repositories {
     mavenCentral()

@@ -1,49 +1,45 @@
 package br.com.ifood.connection.data.repository;
 
+import br.com.ifood.connection.data.entity.StatusEntity;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
-
-import br.com.ifood.connection.data.entity.StatusEntity;
 
 public interface StatusRepository extends CrudRepository<StatusEntity, UUID> {
 
     /**
      * Select the schedules from the restaurant that have the date/time dtSchedule between.
-     * 
-     * @param restaurantId
-     * @param dtSchedule
-     *            the date/time that has to be between the schedule
-     * @return
-     */
-    @Query("select s from StatusEntity s where s.restaurantId = :restaurantId and s.type = " +
-            "br.com.ifood.connection.data.entity.status.StatusType.UNAVAILABLE and " +
-            " s.dtInits <= :dtSchedule and s.dtEnds >= :dtSchedule")
-    Optional<StatusEntity> findSpecificSchedule(@Param("restaurantId") Long restaurantId,
-            @Param("dtSchedule") Instant dtSchedule);
-
-    /**
-     * Select the schedules from the restaurant that start before the date/time dtLimit.
      *
-     * @param restaurantId
-     * @param dtLimit
-     *            the start date/time limit
-     * @return
+     * @param dtSchedule the date/time that has to be between the schedule
      */
     @Query("select s from StatusEntity s where s.restaurantId = :restaurantId and s.type = " +
-            "br.com.ifood.connection.data.entity.status.StatusType.UNAVAILABLE and " +
-            " s.dtInits < :dtLimit")
-    List<StatusEntity> findScheduleHistory(@Param("restaurantId") Long restaurantId,
-            @Param("dtLimit") Instant dtLimit);
+        "br.com.ifood.connection.data.entity.status.StatusType.UNAVAILABLE and " +
+        " s.dtInits <= :dtSchedule and s.dtEnds >= :dtSchedule")
+    Optional<StatusEntity> findSpecificSchedule(@Param("restaurantId") Long restaurantId,
+        @Param("dtSchedule") Instant dtSchedule);
+
+    @Query("select s from StatusEntity s where s.restaurantId = :restaurantId and s.type = " +
+        "br.com.ifood.connection.data.entity.status.StatusType.UNAVAILABLE and " +
+        " s.dtInits < :dtLimit")
+    Page<StatusEntity> findPagedScheduleHistory(@Param("restaurantId") Long restaurantId,
+        @Param("dtLimit") Instant dtLimit, Pageable pageable);
+
+    @Query("select s from StatusEntity s where s.restaurantId = :restaurantId and s.type = " +
+        "br.com.ifood.connection.data.entity.status.StatusType.UNAVAILABLE and " +
+        " (s.dtInits between :dtStart and :dtEnd or s.dtEnds between :dtStart and :dtEnd)")
+    Page<StatusEntity> findPagedScheduleHistorySpecificPeriod(@Param("restaurantId") Long
+        restaurantId, @Param("dtStart") Instant dtStart, @Param("dtEnd") Instant dtEnd,
+        Pageable pageable);
 
     @Query("select s from StatusEntity s where s.restaurantId = :restaurantId and " +
-            "s.dtInits < :dtLimit")
+        "s.dtInits < :dtLimit")
     List<StatusEntity> findOnlineAndUnavailable(@Param("restaurantId") Long restaurantId,
-            @Param("dtLimit") Instant dtLimit);
+        @Param("dtLimit") Instant dtLimit);
 
 }
