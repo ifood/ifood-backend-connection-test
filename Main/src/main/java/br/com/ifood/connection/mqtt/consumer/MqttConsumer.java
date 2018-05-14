@@ -64,7 +64,7 @@ public class MqttConsumer {
 
     private final StatusRepository statusRepository;
 
-    @Qualifier(value = "restaurants-status")
+    @Qualifier("${app.cache.restaurants.status}")
     private final IgniteCache<String, StatusEntity> onlineStatusCache;
 
     private final SingletonFactory<OnlineStatusExpirePolicy> factoryOnlineStatusExpirePolicy;

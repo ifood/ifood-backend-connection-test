@@ -3,56 +3,53 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.1.RELEASE")
+        classpath('org.springframework.boot:spring-boot-gradle-plugin:2.0.1.RELEASE')
 
+        classpath('org.flywaydb:flyway-gradle-plugin:5.0.7')
         classpath('mysql:mysql-connector-java:5.1.46')
     }
-}
-
-plugins {
-    id "org.flywaydb.flyway" version "5.0.7"
 }
 
 group 'br.com.ifood.connection'
 version '1.0-SNAPSHOT'
 
-apply plugin: 'java'
 apply plugin: 'idea'
-apply plugin: 'org.springframework.boot'
+apply plugin: 'java'
 apply plugin: 'io.spring.dependency-management'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'org.flywaydb.flyway'
 
+// Java
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compileOnly("org.projectlombok:lombok:1.16.16")
-
-    compile ('com.h2database:h2:1.4.195')
+    compileOnly("org.projectlombok:lombok:1.16.20")
 
     compile('org.springframework.boot:spring-boot-starter-web') {
         exclude module: "spring-boot-starter-tomcat"
     }
     compile('org.springframework.boot:spring-boot-starter-jetty')
-
+    compile("org.springframework.boot:spring-boot-starter-hateoas")
+    compile('org.springframework.boot:spring-boot-starter-data-jpa')
     compile('org.springframework.boot:spring-boot-starter-integration')
     compile('org.springframework.integration:spring-integration-mqtt:5.0.4.RELEASE')
 
-    compile('org.springframework.boot:spring-boot-starter-data-jpa')
-
     compile('org.flywaydb:flyway-maven-plugin:5.0.7')
-
     compile('mysql:mysql-connector-java:5.1.46')
+    compile('com.h2database:h2:1.4.195')    // Problem with version 1.4.197 for Apache Ignite
 
     compile('org.apache.ignite:ignite-core:2.4.0')
     compile('org.apache.ignite:ignite-spring:2.4.0')
     compile('org.apache.ignite:ignite-indexing:2.4.0')
 
     compile('io.springfox:springfox-swagger-ui:2.7.0')
-    compile ('io.springfox:springfox-swagger2:2.7.0')
+    compile('io.springfox:springfox-swagger2:2.7.0')
 
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }

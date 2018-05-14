@@ -1,7 +1,7 @@
 import java.nio.ByteBuffer;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
+import java.util.Random;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -31,11 +31,17 @@ public class Client {
 
     private static MqttMessage createScheduleMessage(long restaurantId) {
 
+        int startSchedule = new Random(Instant.now().toEpochMilli()).nextInt(11);
+
+        Instant now = Instant.now();
+        Instant today = now.truncatedTo(ChronoUnit.DAYS);
+        Instant instantSchedule = today.plus(11 + startSchedule, ChronoUnit.HOURS);
+
         byte[] buffer = new byte[24];
         ByteBuffer byteBuffer = ByteBuffer.wrap(buffer);
         byteBuffer.putLong(restaurantId);
-        byteBuffer.putLong(Instant.now().toEpochMilli());
-        byteBuffer.putLong(Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli());
+        byteBuffer.putLong(instantSchedule.toEpochMilli());
+        byteBuffer.putLong(instantSchedule.plus(1, ChronoUnit.HOURS).toEpochMilli());
 
         MqttMessage message = new MqttMessage(buffer);
         message.setQos(2);
@@ -70,7 +76,8 @@ public class Client {
 
                     // Send one message at every minute to guarantee
                     // the 2 minutes limit
-                    Thread.sleep(60 * 1000);
+                    //Thread.sleep(60 * 1000);
+                    Thread.sleep(100);
 
 
                 }
