@@ -1,42 +1,66 @@
-# iFood Backend Test - Connection
-
-Our goal is to be the best delivery company in the world. In order to achieve that we must do our best to manage the connection between iFood platform and all of our 100.000 restaurants.
-
-## Tasks
-
-Your task is to develop one (or more, feel free) service(s) to:
-* handle connection between Restaurant and iFood Platform
-* store and delete schedules of unavailabilities
-* consolidate and provide data about the restaurants' connection
-
-You also will have to emulate a client (keep it simple) for the Restaurant. The client must:
-* guarantee “keep-alive” interactions with your service
-* create and cancel schedules of unavailabilities
-
-Fork this repository and submit your code.
-
-## Business Rules
-
-* In iFood Platform, the opening hour for the Restaurants are from 10:00 am to 11:00 pm.
-* A Restaurant may be **available**/**unavailable**.
-* A Restaurant may scheduled the status **unavailable**, due to the following reasons:
-  - lack of delivery staff
-  - connection issues (bad internet)<sup>1</sup>
-  - overloaded due to offline orders
-  - holidays
-* A Restaurant may also be **online**/**offline**:
-  - In order to a Restaurant be considered **online**, it must be inside the opening hour AND have interacted with our platform (aka sent a keep-alive signal) in the last two minutes AND its status should be **available**. Otherwise, it should be considered **offline**.
-* The Restaurants are ranked according to the time they spent **offline**, inside the opening hour, without a scheduled **unavailability**.
-* Example:
-![restaurant connection timeline](https://www.lucidchart.com/publicSegments/view/4d48ac9c-e543-4531-abd5-eff0d9788ea6/image.png)
+## Features
+* Connects to a MQTT broker to received keep-alive and schedule messages
+* Serves API to check restaurant online status, unschedule a unavailability and rank restaurants
+based on their offline status
+* Can initializes a mock environment using docker-composer
+* Uses Apache Ignite to do faster processing and caching for some features
 
 ## Requirements
+* Gradle
+* JDK 8
+* Docker
+* Docker composer
 
-In order to handle 100.000 simultaneously connections, we would like to use an IOT protocol (like MQTT or XMPP) for this scenario.
+## Running
+It's possible to run the main application using the gradle wrapper from the Linux or Mac command
+line:
 
-You will have to keep the connection state of the Restaurants freshly available for whoever wants to query it. We advise the use of some type of compute grid to do this processing in parallel by the instances of the service. Apache Ignite might be a good choice. Or not.
+    ./gradlew bootRun
 
-This service needs to answer promptly:
-* Given a list of Restaurants, whether they are **online** or **offline**.
-* Given a specific Restaurant, its unavailability history.
-* Reports for iFood commercial team so they can measure how our Restaurants are ranked, according to the amount of time they spent **offline** (see the diagram above, the red section on the "Restaurant Status" timeline).
+In Windows:
+
+    gradlew.bat bootRun
+
+To run the Docker images (mosquitto, apache-ignite, mysql):
+
+     docker-composer up -d
+
+The client can be found on the subproject Client, it's a simple command line that sends keep-alive
+every 1 minute, and send a fix schedule for restaurant 1 at a fixed time if initialized with
+schedule parameter from command line
+
+The application is configured with Flyway, once the application is booted it's goind to create the
+tables and initiaze with 5 restaurants for test purposes.
+
+
+## Docker
+
+The docker compose file configures 3 containers:
+- MySQL
+- Eclipse Mosquitto
+- Apache Ignite
+
+For MySQL:
+- Exposes the port 3306 on the host
+- Creates a schema called 'connection'
+- Sets the default password for root
+- Creates and sets the password for the application's user
+
+For Apache Ignite:
+- Exposes the range of ports 47500-47600 and 47100-47200
+- Configures the network in mode 'host'
+- Mounts the file main/resources/docker/config/ignite/config.xml as the config
+- Disables the quiet mode for logging
+
+For Eclipse Mosquitto:
+- Exposes the port 1883 on the host
+- Mounts the file main/resources/docker/config/mosquitto/mosquitto.conf as the config
+- Mounts the directory in the environment variable MOSQUITTO_DATA as the data directory
+
+To change the data directory for Eclipse Mosquitto you have three options:
+- Modify the variable MOSQUITTO_DATA in the file .env in projects' root directory
+- Create a environment variable or just for the shell called MOSQUITTO_DATA with the directory as value
+- Pass the variable with the -e VARIABLE=VALUE option
+
+*For more information please check docker-compose's documentation:
+https://docs.docker.com/compose/environment-variables/*
