@@ -1,0 +1,42 @@
+# Server
+server:
+  port: 0
+  tomcat:
+    accesslog:
+      enabled: true
+      directory: ${logging.path}/
+      prefix: ${spring.application.name}_access_log
+  compression:
+    enabled: true
+
+spring:
+  application:
+    name: @project.artifactId@
+    index: ${spring.application.name}
+  data:
+    mongodb:
+      uri: mongodb+srv://mongouser:m0ng0u53r@mymongodbcluster-hwri1.mongodb.net/ifood-db?retryWrites=true
+  jackson:
+    default-property-inclusion: non_null
+    date-format: com.fasterxml.jackson.databind.util.ISO8601DateFormat
+    serialization:
+      write_dates_as_timestamps: false
+      write_date_timestamps_as_nanoseconds: false
+      write_empty_json_arrays: false
+
+mqttpahoclient:
+  properties:
+    topic: ifood-client-topic
+    broker: "tcp://localhost:1883"
+    qos: 2
+
+# Management
+management:
+  context-path: /@project.artifactId@
+  security:
+    enabled: false
+
+#Logging
+logging:
+  path: /tmp/ifood-client/logs
+  file: ${logging.path}/application_${spring.application.index}

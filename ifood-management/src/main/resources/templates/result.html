@@ -1,0 +1,14 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Ifood Restaurant Management Platform</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <body>
+        <h1>Result</h1>
+        <p th:text="'Name: ' + ${restaurant.name}" />
+        <p th:text="'Code: ' + ${restaurant.code}" />
+        <p th:text="'FoodType: ' + ${restaurant.foodType}" />
+        <p th:text="'Available: ' + ${restaurant.available}" />
+    </body>
+</html>
