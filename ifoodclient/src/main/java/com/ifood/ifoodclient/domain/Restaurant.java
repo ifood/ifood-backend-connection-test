@@ -30,8 +30,13 @@ public class Restaurant {
     @Indexed(unique = true)
     private String code;
 
-    private String foodType;
+    private String foodTypes;
 
+    private Integer stars;
+
+    private boolean loggedIn;
+
+    @NotNull
     private boolean sendKeepAlive;
 
     @NotNull

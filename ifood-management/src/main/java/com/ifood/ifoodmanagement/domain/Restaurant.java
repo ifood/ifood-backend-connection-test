@@ -11,6 +11,8 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.NotNull;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -21,8 +23,10 @@ public class Restaurant {
     @Id
     private String id;
 
+    @NotNull
     private String name;
 
+    @NotNull
     @Indexed(unique = true)
     private String code;
 
@@ -30,10 +34,12 @@ public class Restaurant {
 
     private Integer stars;
 
-    private Double distance;
+    private boolean loggedIn;
 
+    @NotNull
     private boolean sendKeepAlive;
 
+    @NotNull
     private boolean available;
 
     @Transient
