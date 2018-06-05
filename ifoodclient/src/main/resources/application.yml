@@ -23,12 +23,19 @@ spring:
       write_dates_as_timestamps: false
       write_date_timestamps_as_nanoseconds: false
       write_empty_json_arrays: false
+  cache:
+    cache-names: restaurant
+    caffeine:
+      spec: maximumSize=5
 
 mqttpahoclient:
   properties:
     topic: ifood-client-topic
     broker: "tcp://localhost:1883"
     qos: 2
+
+cachesettings:
+  defaultKey: CACHED_RESTAURANT
 
 # Management
 management:

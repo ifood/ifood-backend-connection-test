@@ -20,7 +20,8 @@
     <properties>
         <eclipse-paho.version>1.0.2</eclipse-paho.version>
         <lombok.version>1.16.16</lombok.version>
-        <springfox-version>2.7.0</springfox-version>
+        <springfox.version>2.7.0</springfox.version>
+        <caffeine-cache.version>2.6.2</caffeine-cache.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
@@ -80,17 +81,18 @@
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
-            <version>${springfox-version}</version>
+            <version>${springfox.version}</version>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
-            <version>${springfox-version}</version>
+            <version>${springfox.version}</version>
         </dependency>
         <!-- caffeine cache -->
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
+            <version>${caffeine-cache.version}</version>
         </dependency>
 
         <dependency>

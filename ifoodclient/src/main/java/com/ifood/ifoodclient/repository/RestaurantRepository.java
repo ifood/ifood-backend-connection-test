@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface RestaurantRepository extends MongoRepository<Restaurant, String> {
 
     Optional<Restaurant> findByCode(String code);
+
+    Optional<Restaurant> findDistinctFirstByLoggedInFalse();
 }
