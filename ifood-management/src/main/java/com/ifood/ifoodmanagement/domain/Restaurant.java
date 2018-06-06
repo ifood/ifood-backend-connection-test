@@ -24,11 +24,11 @@ public class Restaurant {
     private String id;
 
     @NotNull
-    private String name;
-
-    @NotNull
     @Indexed(unique = true)
     private String code;
+
+    @NotNull
+    private String name;
 
     private String foodTypes;
 

@@ -5,7 +5,6 @@ import com.ifood.ifoodclient.error.ApiException;
 import com.ifood.ifoodclient.infrastructure.CacheBean;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -23,20 +22,35 @@ public class IfoodClientCommandService implements IifoodClientCommandService {
     @Override
     @Scheduled(cron = "0 0/1 * 1/1 * ?")  // For debugging purposes. Uncomment Correct CRON!
 //    @Scheduled(cron = "0 0/2 * 1/1 * ?")
-    public void sendKeepAliveSignal() {
+    public void performDefaultRestaurantScheduledOperations(){
 
-        try{
-            Restaurant restaurant = cacheBean.getRestaurant();
+        Restaurant restaurant = cacheBean.getRestaurant();
 
-            if (restaurant.isSendKeepAlive()){
-                mqttCommandService.sendKeepAlive(
-                        String.format(PAYLOAD_BASE_TEXT.concat(" for %s"), restaurant.getCode()),
-                        restaurant.getCode());
-                restaurantCommandService.patch(restaurant, Restaurant.builder().build());
-                restaurantCommandService.insertRestaurantStatusLog(restaurant);
-            }
-        }catch (ApiException ex){
+        this.sendKeepAlive(restaurant.getCode());
+        Restaurant patchedRestaurant = this.patchRestaurant(restaurant);
+        this.insertRestaurantStatusLog(patchedRestaurant);
+        this.updateCache(patchedRestaurant);
+    }
+
+    private void sendKeepAlive(String code){
+
+        try {
+            mqttCommandService.sendKeepAlive(
+                    String.format(PAYLOAD_BASE_TEXT.concat(" for %s"), code), code);
+        } catch (ApiException ex){
             log.error("Error ".concat(PAYLOAD_BASE_TEXT));
         }
+    }
+
+    private Restaurant patchRestaurant(Restaurant restaurant){
+        return restaurantCommandService.patch(restaurant, Restaurant.builder().build());
+    }
+
+    private void insertRestaurantStatusLog(Restaurant restaurant){
+        restaurantCommandService.insertRestaurantStatusLog(restaurant);
+    }
+
+    private void updateCache(Restaurant patched){
+        cacheBean.putRestaurant(patched);
     }
 }
