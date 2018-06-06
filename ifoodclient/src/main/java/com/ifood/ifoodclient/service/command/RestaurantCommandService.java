@@ -20,11 +20,6 @@ public class RestaurantCommandService implements IRestaurantCommandService {
     private final RestaurantStatusLogRepository restaurantStatusLogRepository;
 
     @Override
-    public Restaurant create(Restaurant restaurant) {
-        return restaurantRepository.save(restaurant);
-    }
-
-    @Override
     public Restaurant patch(Restaurant existingRestaurant, Restaurant newRestaurant) {
 
         Optional.ofNullable(newRestaurant.getName()).ifPresent(existingRestaurant::setName);

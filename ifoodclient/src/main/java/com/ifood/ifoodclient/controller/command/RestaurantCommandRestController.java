@@ -1,13 +1,11 @@
 package com.ifood.ifoodclient.controller.command;
 
 import com.ifood.ifoodclient.domain.Restaurant;
-import com.ifood.ifoodclient.error.ApiException;
 import com.ifood.ifoodclient.service.command.IRestaurantCommandService;
 import com.ifood.ifoodclient.service.query.IRestaurantQueryService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,31 +20,6 @@ public class RestaurantCommandRestController {
 
     private final IRestaurantCommandService commandService;
     private final IRestaurantQueryService queryService;
-
-    @ApiOperation(value = "Create an Restaurant",response = Restaurant.class, tags = {"restaurant"})
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "Content-Type",required = true, dataType = "string", paramType = "header",defaultValue = MediaType.APPLICATION_JSON_VALUE),
-            @ApiImplicitParam(name = "Application-Id",required = true, dataType = "string", paramType = "header")})
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Created", response = Restaurant.class),
-            @ApiResponse(code = 409, message = "Conflict")
-    })
-    @PostMapping(value = "/restaurant", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity create(
-            @RequestHeader(name = "Application-Id") String appId,
-            @ApiParam(name = "restaurant") @Valid @RequestBody Restaurant restaurant) {
-
-        final Optional<Restaurant> restaurantOptional = queryService.findByCode(restaurant.getCode());
-        if (restaurantOptional.isPresent())
-            return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
-                    .body(ApiException.builder()
-                            .code(ApiException.BUSINESS_RULE_ERROR)
-                            .message("No restaurant found for given code."));
-
-        final Restaurant persistedRestaurant = commandService.create(restaurant);
-        return ResponseEntity.status(HttpStatus.CREATED).body(persistedRestaurant);
-    }
 
     @ApiOperation(value = "Partially updates an Restaurant", response = Restaurant.class, tags = {"restaurant"})
     @ApiImplicitParams({

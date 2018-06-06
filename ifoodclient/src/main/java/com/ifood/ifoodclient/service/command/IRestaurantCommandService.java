@@ -4,8 +4,6 @@ import com.ifood.ifoodclient.domain.Restaurant;
 
 public interface IRestaurantCommandService {
 
-    Restaurant create(Restaurant restaurant);
-
     Restaurant patch(Restaurant existingRestaurant, Restaurant newRestaurant);
 
     void insertRestaurantStatusLog(Restaurant restaurant);
