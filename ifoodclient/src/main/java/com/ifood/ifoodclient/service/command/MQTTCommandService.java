@@ -2,7 +2,6 @@ package com.ifood.ifoodclient.service.command;
 
 import com.ifood.ifoodclient.error.ApiException;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;

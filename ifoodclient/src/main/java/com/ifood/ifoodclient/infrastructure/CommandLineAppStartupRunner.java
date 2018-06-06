@@ -16,6 +16,7 @@ import java.util.Optional;
 public class CommandLineAppStartupRunner implements CommandLineRunner {
 
     private final RestaurantRepository restaurantRepository;
+    private final CacheBean cacheBean;
 
     @Value("${cachesettings.defaultKey}")
     private String CACHE_KEY;
@@ -31,8 +32,7 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
             restaurantRepository.save(firstNotLoggedIn);
 
             // Put it on cache, so we can retrieve it later.
-            Cache<String, Restaurant> cache = Caffeine.newBuilder().maximumSize(2).build();
-            cache.put(CACHE_KEY, firstNotLoggedIn);
+            cacheBean.putRestaurant(firstNotLoggedIn);
         }
     }
 }

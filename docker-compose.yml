@@ -1,57 +1,12 @@
 version: '2.1'
 services:
 
-  # rabbitmq:
-  #   image: dadhx05.interno:9090/rabbitmq:management-alpine
-  #   restart: unless-stopped
-  #   mem_limit: 2g
-  #   network_mode: "host"
-
-  # service-registry:
-  #   image: springcloud/eureka:latest
-  #   restart: unless-stopped
-  #   mem_limit: 2g
-  #   memswap_limit: 2g
-  #   mem_swappiness: 0
-  #   environment:
-  #     - REGISTRY_SERVICE_URLS=http://localhost:8761/eureka
-  #   env_file:
-  #     - /apidigital/config/apis/env/common.env
-  #     - /apidigital/config/apis/env/registry.env
-  #   volumes:
-  #     - /apidigital/agent:/oidigital/agent
-  #     - /apidigital/logs/registry:/oidigital/logs
-  #   network_mode: "host"
-
-  eureka-server:
-    image:  spring-cloud-netflix-example/eureka-server
-    hostname: eureka-server
+  mqtt:
+    image: ansi/mosquitto
+    container_name: mosquitto
     ports:
-    - "8761:8761"
-
-  # billingmanagement:
-  #   image: dadhx05.interno:9090/oidigital/billingmanagement:${TAG}
-  #   restart: unless-stopped
-  #   mem_limit: 4g
-  #   memswap_limit: 4g
-  #   mem_swappiness: 0
-  #   environment:
-  #     - APP_DYNAMICS_NODE=${HOSTNAME}
-  #     - BASE_IP_ADDRESS=${HOSTNAME}
-  #     - EUREKA_INSTANCE_HOSTNAME=${HOSTNAME}.interno
-  #     - LOGSTASH_SERVER=${HOSTNAME}.interno:5000
-  #     - REGISTRY_SERVICE_URLS=http://${HOSTNAME}.interno:8761/eureka
-  #     - AMQP_HOST=${HOSTNAME}.interno
-  #   env_file:
-  #     - /apidigital/config/apis/env/common.env
-  #     - /apidigital/config/apis/env/service_commons.env
-  #     - /apidigital/config/apis/env/${ARTIFACT_ID:-billingmanagement-v1}${VERSION}.env
-  #   volumes:
-  #     - /apidigital/agent:/oidigital/agent
-  #     - /apidigital/logs/apis/billing${VERSION}:/oidigital/logs
-  #     - /apidigital/data/billingManagement/invoiceFiles/:/oidigital/data/billingManagement/invoiceFiles/
-  #   depends_on:
-  #     - service-registry
-  #     - rabbitmq
-  #     - logstash
-  #   network_mode: "host"
+     - 1883:1883
+    entrypoint: /usr/local/sbin/mosquitto -c /etc/mosquitto/mosquitto.conf
+    volumes:
+     - ./etc/mosquitto:/etc/mosquitto:ro
+     - ./var/log/mosquitto:/var/log/mosquitto:rw

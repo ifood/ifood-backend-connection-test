@@ -20,11 +20,9 @@ public class IfoodClientCommandService implements IifoodClientCommandService {
 
     private static final String PAYLOAD_BASE_TEXT = "Sending keep-alive signal";
 
-    @Value("${cachesettings.defaultKey}")
-    private String CACHE_KEY;
-
     @Override
-    @Scheduled(cron = "0 0/2 * 1/1 * ?")
+    @Scheduled(cron = "0 0/1 * 1/1 * ?")  // For debugging purposes. Uncomment Correct CRON!
+//    @Scheduled(cron = "0 0/2 * 1/1 * ?")
     public void sendKeepAliveSignal() {
 
         try{

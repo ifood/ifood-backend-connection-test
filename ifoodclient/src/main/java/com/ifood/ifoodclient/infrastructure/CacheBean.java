@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -16,13 +18,18 @@ public class CacheBean {
     @Value("${cachesettings.defaultKey}")
     private String CACHE_KEY;
 
+    private Cache<String, Restaurant> restaurantCache;
+
+    @PostConstruct
+    private void initializeCache(){
+        restaurantCache = Caffeine.newBuilder().build();
+    }
+
     public Restaurant getRestaurant(){
-        Cache<String, Restaurant> restaurantCache = Caffeine.newBuilder().build();
         return restaurantCache.getIfPresent(CACHE_KEY);
     }
 
     public void putRestaurant(Restaurant restaurant){
-        Cache<String, Restaurant> restaurantCache = Caffeine.newBuilder().build();
         restaurantCache.put(CACHE_KEY, restaurant);
     }
 }

@@ -1,0 +1,1 @@
+mongoimport --host MyMongoDBCluster-shard-0/mymongodbcluster-shard-00-00-hwri1.mongodb.net:27017,mymongodbcluster-shard-00-01-hwri1.mongodb.net:27017,mymongodbcluster-shard-00-02-hwri1.mongodb.net:27017 --ssl --username mongouser --password <PASSWORD> --authenticationDatabase admin --db ifood-db --collection restaurant --type json --file ifood-restaurants.json --jsonArray

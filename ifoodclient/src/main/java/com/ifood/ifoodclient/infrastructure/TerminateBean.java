@@ -17,7 +17,7 @@ public class TerminateBean {
     private final RestaurantRepository restaurantRepository;
 
     @PreDestroy
-    public void onDestroy() throws Exception {
+    public void onDestroy() {
         log.info("Starting to destroy Spring Container...");
         Restaurant restaurant = cacheBean.getRestaurant();
         restaurant.setLoggedIn(false);
