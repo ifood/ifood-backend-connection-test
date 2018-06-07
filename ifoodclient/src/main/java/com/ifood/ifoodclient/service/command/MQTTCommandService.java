@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Data
 @Slf4j
-@ConfigurationProperties(prefix = "mqttpahoclient.properties")
+@ConfigurationProperties(prefix = "mqttclient.properties")
 public class MQTTCommandService {
 
     private String topic;
@@ -42,9 +42,9 @@ public class MQTTCommandService {
     }
 
     private void connectToBroker(MqttClient mqttClient, MqttConnectOptions connOpts) throws MqttException {
-        log.info("Connecting to broker: " + broker);
+        log.info("Connecting to MQTT broker: " + broker);
         mqttClient.connect(connOpts);
-        log.info("Connected");
+        log.info("MQTT broker connected!");
     }
 
     private MqttConnectOptions getMqttConnectOptions(){
@@ -54,9 +54,9 @@ public class MQTTCommandService {
     }
 
     private void publishMessageToBroker(MqttClient mqttClient, String payload) throws MqttException {
-        log.info("Publishing message: " + payload);
+        log.info("Publishing message to MQTT broker: [ " + payload + " ]");
         mqttClient.publish(topic, this.getMqttMessage(payload));
-        log.info("Client Message published");
+        log.info("Client Message published successfully.");
     }
 
     private MqttMessage getMqttMessage(String payload){
@@ -67,6 +67,6 @@ public class MQTTCommandService {
 
     private void disconnect(MqttClient mqttClient) throws MqttException {
         mqttClient.disconnect();
-        log.info("Client Disconnected");
+        log.info("Client successfully disconnected from MQTT broker.");
     }
 }

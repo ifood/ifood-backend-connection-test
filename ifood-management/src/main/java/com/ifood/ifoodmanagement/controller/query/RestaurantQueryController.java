@@ -1,7 +1,7 @@
 package com.ifood.ifoodmanagement.controller.query;
 
 import com.ifood.ifoodmanagement.domain.Restaurant;
-import com.ifood.ifoodmanagement.domain.RestaurantStatusLog;
+import com.ifood.ifoodmanagement.domain.ClientKeepAliveLog;
 import com.ifood.ifoodmanagement.service.IRestaurantQueryService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
@@ -55,12 +55,12 @@ public class RestaurantQueryController {
         return ResponseEntity.ok(restaurantQueryService.findAll());
     }
 
-    @ApiOperation(value = "Fetch a Restaurant availability history", response = RestaurantStatusLog.class, responseContainer = "List", tags = {"restaurantStatusLog"})
+    @ApiOperation(value = "Fetch a Restaurant availability history", response = ClientKeepAliveLog.class, responseContainer = "List", tags = {"restaurantStatusLog"})
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Content-Type",required = true, dataType = "string", paramType = "header", defaultValue = MediaType.APPLICATION_JSON_VALUE),
             @ApiImplicitParam(name = "Application-Id",required = true, dataType = "string", paramType = "header")
     })
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "Ok", response = RestaurantStatusLog.class)})
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Ok", response = ClientKeepAliveLog.class)})
     @GetMapping(value = "/restaurant/history/{code}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity fetchRestaurantAvailabilityHistory(
             @RequestHeader(name = "Application-Id") String appId,

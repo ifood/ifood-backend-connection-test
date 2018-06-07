@@ -18,6 +18,8 @@
     </parent>
 
     <properties>
+        <docker.image.prefix>ifoodclient</docker.image.prefix>
+        <dockerfile-maven-version>1.4.3</dockerfile-maven-version>
         <eclipse-paho.version>1.0.2</eclipse-paho.version>
         <lombok.version>1.16.16</lombok.version>
         <springfox.version>2.7.0</springfox.version>
@@ -94,7 +96,7 @@
             <artifactId>caffeine</artifactId>
             <version>${caffeine-cache.version}</version>
         </dependency>
-
+        <!-- spring test -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -110,7 +112,25 @@
             </plugin>
             <plugin>
                 <groupId>com.spotify</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
+                <artifactId>dockerfile-maven-plugin</artifactId>
+                <version>${dockerfile-maven-version}</version>
+                <executions>
+                    <execution>
+                        <id>default</id>
+                        <goals>
+                            <goal>build</goal>
+                            <goal>push</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <finalName>${docker.image.prefix}/${project.artifactId}</finalName>
+                    <repository>spotify/foobar</repository>
+                    <tag>${project.version}</tag>
+                    <buildArgs>
+                        <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
+                    </buildArgs>
+                </configuration>
             </plugin>
         </plugins>
     </build>

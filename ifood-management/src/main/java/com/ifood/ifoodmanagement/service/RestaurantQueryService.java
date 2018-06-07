@@ -1,7 +1,7 @@
 package com.ifood.ifoodmanagement.service;
 
 import com.ifood.ifoodmanagement.domain.Restaurant;
-import com.ifood.ifoodmanagement.domain.RestaurantStatusLog;
+import com.ifood.ifoodmanagement.domain.ClientKeepAliveLog;
 import com.ifood.ifoodmanagement.error.ApiNotFoundException;
 import com.ifood.ifoodmanagement.repository.RestaurantRepository;
 import com.ifood.ifoodmanagement.repository.RestaurantStatusLogRepository;
@@ -35,7 +35,7 @@ public class RestaurantQueryService implements IRestaurantQueryService {
     }
 
     @Override
-    public List<RestaurantStatusLog> fetchRestaurantAvailabilityHistory(String code, String status, Interval dateInterval) {
+    public List<ClientKeepAliveLog> fetchRestaurantAvailabilityHistory(String code, String status, Interval dateInterval) {
 
         final Optional<DateTime> start = Optional.ofNullable(dateInterval.getStart());
         final DateTime end = Optional.ofNullable(dateInterval.getEnd()).orElse(DateTime.now());

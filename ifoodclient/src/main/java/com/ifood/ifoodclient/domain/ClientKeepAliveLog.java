@@ -15,12 +15,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document
-public class RestaurantStatusLog {
+public class ClientKeepAliveLog {
 
     @Id
     private String id;
 
-    @Indexed(unique = true)
     private String restaurantCode;
 
     private boolean available;

@@ -17,7 +17,7 @@ public class IfoodClientCommandService implements IifoodClientCommandService {
     private final IRestaurantCommandService restaurantCommandService;
     private final CacheBean cacheBean;
 
-    private static final String PAYLOAD_BASE_TEXT = "Sending keep-alive signal";
+    private static final String PAYLOAD_BASE_TEXT = "keepAlive-%s";
 
     @Override
     @Scheduled(cron = "0 0/1 * 1/1 * ?")  // For debugging purposes. Uncomment Correct CRON!
@@ -35,10 +35,9 @@ public class IfoodClientCommandService implements IifoodClientCommandService {
     private void sendKeepAlive(String code){
 
         try {
-            mqttCommandService.sendKeepAlive(
-                    String.format(PAYLOAD_BASE_TEXT.concat(" for %s"), code), code);
+            mqttCommandService.sendKeepAlive(String.format(PAYLOAD_BASE_TEXT, code), code   );
         } catch (ApiException ex){
-            log.error("Error ".concat(PAYLOAD_BASE_TEXT));
+            log.error(String.format("Error sending client keepAlive for restaurant [" + code + "]"));
         }
     }
 
