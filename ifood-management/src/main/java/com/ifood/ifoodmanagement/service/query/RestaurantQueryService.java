@@ -1,4 +1,4 @@
-package com.ifood.ifoodmanagement.service;
+package com.ifood.ifoodmanagement.service.query;
 
 import com.ifood.ifoodmanagement.domain.Restaurant;
 import com.ifood.ifoodmanagement.domain.ClientKeepAliveLog;

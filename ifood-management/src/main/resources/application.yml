@@ -1,6 +1,6 @@
 # Server
 server:
-  port: 8097
+  port: 0
   tomcat:
     accesslog:
       enabled: true
@@ -24,10 +24,10 @@ spring:
       write_date_timestamps_as_nanoseconds: false
       write_empty_json_arrays: false
 
-mqttpahoclient:
+mqttclient:
   properties:
-    topic: ifood-client-topic
-    broker: "tcp://localhost:1883"
+    topic: ifoodclient-keepAlive-topic
+    broker: "tcp://ec2-34-219-228-8.us-west-2.compute.amazonaws.com:1883"
     qos: 2
 
 # Management

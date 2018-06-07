@@ -1,8 +1,9 @@
-package com.ifood.ifoodclient.service.command;
+package com.ifood.ifoodclient.service.command.ifood;
 
 import com.ifood.ifoodclient.domain.Restaurant;
 import com.ifood.ifoodclient.error.ApiException;
 import com.ifood.ifoodclient.infrastructure.CacheBean;
+import com.ifood.ifoodclient.service.command.mqtt.MQTTCommandService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -28,7 +29,7 @@ public class IfoodClientCommandService implements IifoodClientCommandService {
 
         this.sendKeepAlive(restaurant.getCode());
         Restaurant patchedRestaurant = this.patchRestaurant(restaurant);
-        this.insertRestaurantStatusLog(patchedRestaurant);
+        //this.insertRestaurantStatusLog(patchedRestaurant);
         this.updateCache(patchedRestaurant);
     }
 

@@ -1,4 +1,4 @@
-package com.ifood.ifoodclient.service.command;
+package com.ifood.ifoodclient.service.command.ifood;
 
 public interface IifoodClientCommandService {
 

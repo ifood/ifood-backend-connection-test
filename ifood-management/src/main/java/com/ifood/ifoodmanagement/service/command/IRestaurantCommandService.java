@@ -1,4 +1,4 @@
-package com.ifood.ifoodmanagement.service;
+package com.ifood.ifoodmanagement.service.command;
 
 import com.ifood.ifoodmanagement.domain.Restaurant;
 

@@ -30,7 +30,7 @@ spring:
 
 mqttclient:
   properties:
-    topic: ifood-client-topic
+    topic: ifoodclient-keepAlive-topic
     broker: "tcp://ec2-34-219-228-8.us-west-2.compute.amazonaws.com:1883"
     qos: 2
 

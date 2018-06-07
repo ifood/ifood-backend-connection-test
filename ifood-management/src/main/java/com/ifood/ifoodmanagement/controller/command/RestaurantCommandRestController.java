@@ -2,8 +2,8 @@ package com.ifood.ifoodmanagement.controller.command;
 
 import com.ifood.ifoodmanagement.domain.Restaurant;
 import com.ifood.ifoodmanagement.error.ApiException;
-import com.ifood.ifoodmanagement.service.IRestaurantCommandService;
-import com.ifood.ifoodmanagement.service.IRestaurantQueryService;
+import com.ifood.ifoodmanagement.service.command.IRestaurantCommandService;
+import com.ifood.ifoodmanagement.service.query.IRestaurantQueryService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

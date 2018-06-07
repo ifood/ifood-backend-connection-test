@@ -1,7 +1,7 @@
 package com.ifood.ifoodclient.controller.command;
 
 import com.ifood.ifoodclient.domain.Restaurant;
-import com.ifood.ifoodclient.service.command.IRestaurantCommandService;
+import com.ifood.ifoodclient.service.command.ifood.IRestaurantCommandService;
 import com.ifood.ifoodclient.service.query.IRestaurantQueryService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;

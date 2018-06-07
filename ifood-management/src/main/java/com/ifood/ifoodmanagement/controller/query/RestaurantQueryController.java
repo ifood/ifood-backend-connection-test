@@ -2,7 +2,7 @@ package com.ifood.ifoodmanagement.controller.query;
 
 import com.ifood.ifoodmanagement.domain.Restaurant;
 import com.ifood.ifoodmanagement.domain.ClientKeepAliveLog;
-import com.ifood.ifoodmanagement.service.IRestaurantQueryService;
+import com.ifood.ifoodmanagement.service.query.IRestaurantQueryService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.joda.time.DateTime;

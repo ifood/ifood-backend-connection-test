@@ -1,4 +1,4 @@
-package com.ifood.ifoodclient.service.command;
+package com.ifood.ifoodclient.service.command.ifood;
 
 import com.ifood.ifoodclient.domain.Restaurant;
 import com.ifood.ifoodclient.domain.ClientKeepAliveLog;
