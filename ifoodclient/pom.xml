@@ -125,7 +125,7 @@
                 </executions>
                 <configuration>
                     <finalName>${docker.image.prefix}/${project.artifactId}</finalName>
-                    <repository>spotify/foobar</repository>
+                    <repository>wfigueiredo/ifood-backend-test</repository>
                     <tag>${project.version}</tag>
                     <buildArgs>
                         <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
