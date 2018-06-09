@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @RequiredArgsConstructor
-public class Config {
+public class ConfigClient {
 
     private final RestaurantRepository restaurantRepository;
 
@@ -19,5 +19,10 @@ public class Config {
     @Bean
     public CacheBean getCacheBean() {
         return new CacheBean();
+    }
+
+    @Bean
+    public CacheWarmupBean getCacheWarmupBean() {
+        return new CacheWarmupBean(getCacheBean(), restaurantRepository);
     }
 }

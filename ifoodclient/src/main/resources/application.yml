@@ -26,13 +26,13 @@ spring:
   cache:
     cache-names: restaurant
     caffeine:
-      spec: maximumSize=5
+      spec: maximumSize=3
 
 mqttclient:
   properties:
-    topic: ifoodclient-keepAlive-topic
-    broker: "tcp://ec2-34-219-228-8.us-west-2.compute.amazonaws.com:1883"
-    qos: 2
+    topic: ifoodclient-KeepAlive-topic
+    clientId: pahomqtt201806
+    broker: "tcp://ec2-52-26-75-147.us-west-2.compute.amazonaws.com:1883"
 
 cachesettings:
   defaultKey: CACHED_RESTAURANT

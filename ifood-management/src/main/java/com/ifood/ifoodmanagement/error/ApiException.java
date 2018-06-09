@@ -11,6 +11,7 @@ public class ApiException extends RuntimeException {
 	public static final String VALIDATION_ERROR = "validation_error";
 	public static final String INTEGRATION_ERROR = "integration_error";
 	public static final String BUSINESS_RULE_ERROR = "business_rule_error";
+	public static final String INTERNAL_ERROR = "internal_error";
 
 	private final String code;
 	private final String reason;
@@ -21,7 +22,6 @@ public class ApiException extends RuntimeException {
 		this.code = code;
 		this.reason = reason;
 	}
-
 
 	public ApiException(String code, String msg) {
 		super(msg);

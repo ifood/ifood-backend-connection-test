@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface RestaurantStatusLogRepository extends MongoRepository<ClientKeepAliveLog, String> {
+public interface ClientKeepAliveRepository extends MongoRepository<ClientKeepAliveLog, String> {
 
     List<ClientKeepAliveLog> findByRestaurantCodeAndAvailable(String restaurantCode, String availabilityStatus);
 

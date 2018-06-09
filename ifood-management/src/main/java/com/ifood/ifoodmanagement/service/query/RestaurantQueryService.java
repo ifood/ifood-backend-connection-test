@@ -4,7 +4,7 @@ import com.ifood.ifoodmanagement.domain.Restaurant;
 import com.ifood.ifoodmanagement.domain.ClientKeepAliveLog;
 import com.ifood.ifoodmanagement.error.ApiNotFoundException;
 import com.ifood.ifoodmanagement.repository.RestaurantRepository;
-import com.ifood.ifoodmanagement.repository.RestaurantStatusLogRepository;
+import com.ifood.ifoodmanagement.repository.ClientKeepAliveRepository;
 import lombok.RequiredArgsConstructor;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
@@ -23,7 +23,7 @@ import static com.ifood.ifoodmanagement.util.IfoodUtil.isRestaurantOnline;
 public class RestaurantQueryService implements IRestaurantQueryService {
 
     private final RestaurantRepository restaurantRepository;
-    private final RestaurantStatusLogRepository restaurantStatusLogRepository;
+    private final ClientKeepAliveRepository clientKeepAliveRepository;
 
     @Override
     public Optional<Restaurant> findByCode(String code) {
@@ -41,11 +41,11 @@ public class RestaurantQueryService implements IRestaurantQueryService {
         final DateTime end = Optional.ofNullable(dateInterval.getEnd()).orElse(DateTime.now());
 
         if (start.isPresent()){
-            return restaurantStatusLogRepository
+            return clientKeepAliveRepository
                     .findByRestaurantCodeAndAvailableAndLastModifiedBetween(code, status, start.get(), end);
         }
 
-        return restaurantStatusLogRepository.findByRestaurantCodeAndAvailable(code, status);
+        return clientKeepAliveRepository.findByRestaurantCodeAndAvailable(code, status);
     }
 
     @Override
