@@ -27,17 +27,15 @@ public class MQTTCommandService implements MqttCallback, IMqttActionListener {
     @Value("${mqttclient.properties.clientId}")
     private String clientId;
 
-    private MqttAsyncClient mqttAsyncClient;
     private final KeepAliveCommandService keepAliveService;
 
     @PostConstruct
     private void setupAsyncClient(){
         try {
-            mqttAsyncClient = new MqttAsyncClient
+            final MqttAsyncClient mqttAsyncClient = new MqttAsyncClient
                     (broker, clientId, new MemoryPersistence());
 
             mqttAsyncClient.setCallback(this);
-
             this.connectToBroker(mqttAsyncClient);
 
             mqttAsyncClient.subscribe
