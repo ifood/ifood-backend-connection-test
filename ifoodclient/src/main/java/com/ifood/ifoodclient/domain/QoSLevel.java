@@ -1,6 +1,6 @@
 package com.ifood.ifoodclient.domain;
 
-public enum QoSEnum {
+public enum QoSLevel {
 
     AT_MOST_ONCE(0),
     AT_LEAST_ONCE(1),
@@ -12,7 +12,7 @@ public enum QoSEnum {
 
     private int level;
 
-    QoSEnum(int level) {
+    QoSLevel(int level) {
         this.level = level;
     }
 

@@ -1,10 +1,10 @@
 package com.ifood.ifoodmanagement.service.query;
 
-import com.ifood.ifoodmanagement.domain.Restaurant;
 import com.ifood.ifoodmanagement.domain.ClientKeepAliveLog;
+import com.ifood.ifoodmanagement.domain.Restaurant;
 import com.ifood.ifoodmanagement.error.ApiNotFoundException;
-import com.ifood.ifoodmanagement.repository.RestaurantRepository;
 import com.ifood.ifoodmanagement.repository.ClientKeepAliveRepository;
+import com.ifood.ifoodmanagement.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
@@ -54,7 +54,7 @@ public class RestaurantQueryService implements IRestaurantQueryService {
         return restaurantRepository.findAll()
                 .stream()
                 .map(restaurant -> {
-                    restaurant.setOnline(isRestaurantOnline(restaurant));
+                    restaurant.setOnline(isRestaurantOnline(restaurant.isAvailable(), restaurant.getLastModified()));
                     return restaurant;
                 })
                 .collect(Collectors.toList());
@@ -65,12 +65,13 @@ public class RestaurantQueryService implements IRestaurantQueryService {
 
         return restaurantCodes.stream()
                 .map(code -> {
+
                     Optional<Restaurant> optionalRestaurant = restaurantRepository.findByCode(code);
 
                     Restaurant restaurant = null;
                     if (optionalRestaurant.isPresent()){
                         restaurant = optionalRestaurant.get();
-                        restaurant.setOnline(isRestaurantOnline(restaurant));
+                        restaurant.setOnline(isRestaurantOnline(restaurant.isAvailable(), restaurant.getLastModified()));
                     }
 
                     return restaurant;

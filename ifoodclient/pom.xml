@@ -91,6 +91,13 @@
             <artifactId>caffeine</artifactId>
             <version>${caffeine-cache.version}</version>
         </dependency>
+        <!-- Ifood MQTTManagement -->
+        <dependency>
+            <groupId>com.ifood.mqtt</groupId>
+            <artifactId>ifoodmqttmanagement</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>

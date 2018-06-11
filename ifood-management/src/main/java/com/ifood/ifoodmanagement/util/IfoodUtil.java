@@ -14,11 +14,11 @@ public class IfoodUtil {
 
     private IfoodUtil() { throw new IllegalStateException("Utility class"); }
 
-    public static boolean isRestaurantOnline(Restaurant restaurant){
+    public static boolean isRestaurantOnline(boolean isAvailable, DateTime lastModified){
 
         return (isClientInsideOpeningHour() &&
-                isKeepAliveUnderThreshold(restaurant.getLastModified()) &&
-                restaurant.isAvailable()) ? true : false;
+                isKeepAliveUnderThreshold(lastModified) &&
+                isAvailable) ? true : false;
     }
 
     private static boolean isClientInsideOpeningHour(){
