@@ -3,7 +3,6 @@ package com.ifood.ifoodclient.service.command.ifood;
 import com.ifood.ifoodclient.domain.Restaurant;
 import com.ifood.ifoodclient.error.ApiException;
 import com.ifood.ifoodclient.infrastructure.CacheBean;
-import com.ifood.mqtt.ifoodmqttmanagement.service.MQTTClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -21,8 +20,8 @@ public class IfoodClientCommandService implements IifoodClientCommandService {
     private static final String PAYLOAD_BASE_TEXT = "[%s] KeepAlive-signal (%b)";
 
     @Override
-    @Scheduled(cron = "0/30 0 0 ? * * ")    // For debugging purposes.
-//    @Scheduled(cron = "0 0/1 * 1/1 * ?")  // For debugging purposes.
+    @Scheduled(cron = "0/30 0 0 ? * * ")    // debugging purposes... =)
+//    @Scheduled(cron = "0 0/1 * 1/1 * ?")  // debugging purposes... =)
 //    @Scheduled(cron = "0 0/2 * 1/1 * ?")
     public void performDefaultRestaurantScheduledOperations(){
 

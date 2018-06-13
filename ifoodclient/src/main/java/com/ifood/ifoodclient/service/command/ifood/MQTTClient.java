@@ -1,4 +1,4 @@
-package com.ifood.mqtt.ifoodmqttmanagement.service;
+package com.ifood.ifoodclient.service.command.ifood;
 
 import com.ifood.mqtt.ifoodmqttmanagement.client.MQTTClientManager;
 import com.ifood.mqtt.ifoodmqttmanagement.error.ApiException;

@@ -2,6 +2,7 @@ package com.ifood.mqtt.ifoodmqttmanagement.client;
 
 import com.ifood.mqtt.ifoodmqttmanagement.domain.QoSLevel;
 import com.ifood.mqtt.ifoodmqttmanagement.error.ApiException;
+import com.ifood.mqtt.ifoodmqttmanagement.infrastructure.Config;
 import com.ifood.mqtt.ifoodmqttmanagement.service.ClientKeepAliveService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.Map;
 import java.util.Objects;
 
 @Slf4j
@@ -19,22 +21,16 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class MQTTClientManager implements MqttCallback, IMqttActionListener {
 
-    @Value("${ifood.mqttclient.properties.topic}")
-    private String topic;
-
-    @Value("${ifood.mqttclient.properties.broker}")
-    private String broker;
-
-    @Value("${ifood.mqttclient.properties.clientId}")
-    private String clientId;
+    private final Config configuration;
+    private final ClientKeepAliveService clientKeepAliveService;
 
     private MqttAsyncClient publisherAsyncClient;
     private IMqttToken connectToken;
-
-    private final ClientKeepAliveService clientKeepAliveService;
+    private Map<String, String> properties;
 
     @PostConstruct
     protected void setupAsyncClient(){
+        properties = configuration.getMqttClientSettings();
         this.createAsyncConnection();
     }
 
@@ -47,12 +43,21 @@ public class MQTTClientManager implements MqttCallback, IMqttActionListener {
     // --------------------- INTERNAL METHODS ---------------------
 
     private void createAsyncConnection() {
+
         try {
-            publisherAsyncClient = new MqttAsyncClient(broker, clientId, new MemoryPersistence());
+            publisherAsyncClient = new MqttAsyncClient(
+                    properties.get("broker"),
+                    properties.get("clientId"),
+                    new MemoryPersistence());
+
             publisherAsyncClient.setCallback(this);
+
             connectToken = publisherAsyncClient.connect(getMqttConnectOptions());
             connectToken.waitForCompletion();
-            publisherAsyncClient.subscribe(topic, QoSLevel.EXACTLY_ONCE.getLevel());
+
+            publisherAsyncClient.subscribe(
+                    properties.get("topic"),
+                    QoSLevel.EXACTLY_ONCE.getLevel());
         } catch (MqttException me) {
             log.error("Error creating MqttAsyncClient...");
             throw ApiException.builder()
@@ -78,7 +83,9 @@ public class MQTTClientManager implements MqttCallback, IMqttActionListener {
 
     private void publishMqttMessage(String payload) throws MqttException {
         log.info("Publishing message to broker.");
-        publisherAsyncClient.publish(topic, this.createMqttMessage(payload));
+        publisherAsyncClient.publish(
+                properties.get("topic"),
+                this.createMqttMessage(payload));
         log.info("Client message published successfully.");
     }
 

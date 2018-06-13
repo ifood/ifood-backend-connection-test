@@ -28,12 +28,6 @@ spring:
     caffeine:
       spec: maximumSize=3
 
-mqttclient:
-  properties:
-    topic: ifoodclient-KeepAlive-topic
-    clientId: pahomqtt201806
-    broker: "tcp://ec2-52-26-75-147.us-west-2.compute.amazonaws.com:1883"
-
 cachesettings:
   defaultKey: CACHED_RESTAURANT
 

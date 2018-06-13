@@ -24,12 +24,6 @@ spring:
       write_date_timestamps_as_nanoseconds: false
       write_empty_json_arrays: false
 
-mqttclient:
-  properties:
-    topic: ifoodclient-KeepAlive-topic
-    clientId: pahomqtt201806
-    broker: "tcp://ec2-52-26-75-147.us-west-2.compute.amazonaws.com:1883"
-
 # Management
 management:
   context-path: /@project.artifactId@

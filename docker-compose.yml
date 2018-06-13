@@ -2,11 +2,12 @@ version: '2.1'
 services:
 
   mqtt:
-    image: ansi/mosquitto
-    container_name: mosquitto
+    image: eclipse-mosquitto:latest
+    restart: always
     ports:
-     - 1883:1883
-    entrypoint: /usr/local/sbin/mosquitto -c /etc/mosquitto/mosquitto.conf
+      - "1883:1883"
+      - "9001:9001"
     volumes:
-     - ./etc/mosquitto:/etc/mosquitto:ro
-     - ./var/log/mosquitto:/var/log/mosquitto:rw
+      - /opt/conf/mqtt/config:/mosquitto/config
+      - /opt/conf/mqtt/data:/mosquitto/data
+      - /opt/conf/mqtt/log:/mosquitto/log
