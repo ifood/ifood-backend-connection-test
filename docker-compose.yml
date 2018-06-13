@@ -1,13 +1,48 @@
 version: '2.1'
 services:
 
-  mqtt:
-    image: eclipse-mosquitto:latest
-    restart: always
+  mosquitto:
+    image: ansi/mosquitto
+    hostname: mosquitto
+    container_name: mosquitto
+    expose:
+      - "1883"
     ports:
       - "1883:1883"
-      - "9001:9001"
+
+  mongodb:
+    image: mongo:latest
+    restart: unless-stopped
+    container_name: "mongodb"
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
     volumes:
-      - /opt/conf/mqtt/config:/mosquitto/config
-      - /opt/conf/mqtt/data:/mosquitto/data
-      - /opt/conf/mqtt/log:/mosquitto/log
+      - ./data/db:/data/db
+    ports:
+      - 27017:27017
+    command: mongod --smallfiles --logpath=/dev/null # --quiet
+
+  ifoodmanagement:
+    image: wfigueiredo/ifood-backend-test/ifood-management:${TAG}
+    restart: unless-stopped
+    mem_limit: 1g
+    memswap_limit: 1g
+    mem_swappiness: 0
+    environment:
+      - TAG=1.0.0-SNAPSHOT
+      - SPRING_DATA_MONGODB_URI=mongodb://localhost:27017/ifood-db?minPoolSize=10&maxIdleTimeMS=240000&connectTimeoutMS=5000&socketTimeoutMS=15000
+    network_mode: "host"
+
+  ifoodclient:
+    image: wfigueiredo/ifood-backend-test/ifoodclient:${TAG}
+    restart: unless-stopped
+    mem_limit: 1g
+    memswap_limit: 1g
+    mem_swappiness: 0
+    environment:
+      - TAG=1.0.0-SNAPSHOT
+      - SPRING_DATA_MONGODB_URI=mongodb://localhost:27017/ifood-db?minPoolSize=10&maxIdleTimeMS=240000&connectTimeoutMS=5000&socketTimeoutMS=15000
+    network_mode: "host"
+
+  

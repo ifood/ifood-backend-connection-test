@@ -1,6 +1,7 @@
 package com.ifood.mqtt.ifoodmqttmanagement.service;
 
 import com.ifood.mqtt.ifoodmqttmanagement.domain.ClientKeepAliveLog;
+import com.ifood.mqtt.ifoodmqttmanagement.infrastructure.Config;
 import com.ifood.mqtt.ifoodmqttmanagement.restinterfaces.ClientKeepAliveHttpClient;
 import feign.Feign;
 import feign.Logger;
@@ -12,13 +13,21 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+import java.util.Map;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ClientKeepAliveService {
 
-    // For some reason, Spring 2.0 cannot bind this property in runtime... =*(
-    private static final String INTEGRATION_API_URL = "http://localhost:8097/ifoodmanagement";
+    private final Config configuration;
+    private Map<String, String> properties;
+
+    @PostConstruct
+    protected void setupAsyncClient(){
+        properties = configuration.getMqttClientSettings();
+    }
 
     public void createClientKeepAliveLog(String clientId, String isAvailable){
 
@@ -28,7 +37,7 @@ public class ClientKeepAliveService {
                 .decoder(new JacksonDecoder())
                 .logger(new Slf4jLogger(ClientKeepAliveHttpClient.class))
                 .logLevel(Logger.Level.FULL)
-                .target(ClientKeepAliveHttpClient.class, INTEGRATION_API_URL);
+                .target(ClientKeepAliveHttpClient.class, configuration.getIntegrationSettings().get("managementApiUrl"));
 
         ClientKeepAliveLog requestBody = ClientKeepAliveLog.builder()
                 .restaurantCode(clientId)

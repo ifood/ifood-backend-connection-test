@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +20,7 @@ import java.util.Objects;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@Qualifier("mqttClientManager")
 public class MQTTClientManager implements MqttCallback, IMqttActionListener {
 
     private final Config configuration;

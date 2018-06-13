@@ -8,7 +8,8 @@ ifoodproperties:
     topic: ifoodclient-KeepAlive-topic
     clientId: pahomqtt201806
     userContext: MessageListener
-    broker: tcp://ec2-52-26-75-147.us-west-2.compute.amazonaws.com:1883
+    broker: tcp://localhost:1883
+#    broker: tcp://ec2-52-26-75-147.us-west-2.compute.amazonaws.com:1883
   integration:
     managementApiUrl: http://localhost:8097/ifoodmanagement
 

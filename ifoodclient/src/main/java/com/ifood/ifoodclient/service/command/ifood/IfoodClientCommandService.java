@@ -20,9 +20,7 @@ public class IfoodClientCommandService implements IifoodClientCommandService {
     private static final String PAYLOAD_BASE_TEXT = "[%s] KeepAlive-signal (%b)";
 
     @Override
-    @Scheduled(cron = "0/30 0 0 ? * * ")    // debugging purposes... =)
-//    @Scheduled(cron = "0 0/1 * 1/1 * ?")  // debugging purposes... =)
-//    @Scheduled(cron = "0 0/2 * 1/1 * ?")
+    @Scheduled(cron = "${scheduling.keepAliveCron}")
     public void performDefaultRestaurantScheduledOperations(){
 
         Restaurant restaurant = cacheBean.getRestaurant();

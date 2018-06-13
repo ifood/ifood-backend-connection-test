@@ -13,8 +13,8 @@ import java.util.Properties;
 @Configuration
 public class Config {
 
-    private static final String MQTT_CLIENT_SETTINGS_PREFIX = "mqttclient.properties";
-    private static final String INTEGRATION_SETTINGS_PREFIX = "integration.properties";
+    private static final String MQTT_CLIENT_SETTINGS_PREFIX = "ifoodproperties.mqttclient";
+    private static final String INTEGRATION_SETTINGS_PREFIX = "ifoodproperties.integration";
 
     public Map<String, String> getMqttClientSettings() {
         return getSettings(MQTT_CLIENT_SETTINGS_PREFIX);
