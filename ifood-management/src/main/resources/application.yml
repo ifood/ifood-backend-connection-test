@@ -8,6 +8,8 @@ server:
       prefix: ${spring.application.name}_access_log
   compression:
     enabled: true
+  servlet:
+    context-path: /@project.artifactId@
 
 spring:
   application:

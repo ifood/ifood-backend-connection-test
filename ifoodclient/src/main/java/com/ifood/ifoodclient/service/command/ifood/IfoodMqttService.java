@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class MQTTClient {
+public class IfoodMqttService {
 
     private final MQTTClientManager mqttClientManager;
 

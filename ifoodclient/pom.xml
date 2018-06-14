@@ -30,6 +30,11 @@
     </properties>
 
     <dependencies>
+        <!-- quartz -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-quartz</artifactId>
+        </dependency>
         <!-- mongodb -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

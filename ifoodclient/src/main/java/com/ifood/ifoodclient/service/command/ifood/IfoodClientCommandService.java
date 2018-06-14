@@ -5,7 +5,6 @@ import com.ifood.ifoodclient.error.ApiException;
 import com.ifood.ifoodclient.infrastructure.CacheBean;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -13,14 +12,13 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class IfoodClientCommandService implements IifoodClientCommandService {
 
-    private final MQTTClient mqttClient;
+    private final IfoodMqttService ifoodMqttService;
     private final IRestaurantCommandService restaurantCommandService;
     private final CacheBean cacheBean;
 
     private static final String PAYLOAD_BASE_TEXT = "[%s] KeepAlive-signal (%b)";
 
     @Override
-    @Scheduled(cron = "${scheduling.keepAliveCron}")
     public void performDefaultRestaurantScheduledOperations(){
 
         Restaurant restaurant = cacheBean.getRestaurant();
@@ -32,7 +30,7 @@ public class IfoodClientCommandService implements IifoodClientCommandService {
 
     private void sendKeepAlive(String code, String isAvailable){
         try {
-            mqttClient.sendKeepAlive(String.format(PAYLOAD_BASE_TEXT, new String[]{code, isAvailable}));
+            ifoodMqttService.sendKeepAlive(String.format(PAYLOAD_BASE_TEXT, new String[]{code, isAvailable}));
         } catch (ApiException ex){
             log.error(String.format("Error sending client keepAlive for restaurant [" + code + "]"));
         }
