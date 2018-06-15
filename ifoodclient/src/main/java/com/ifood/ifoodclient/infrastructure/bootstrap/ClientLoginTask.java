@@ -21,7 +21,7 @@ public class ClientLoginTask implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         Restaurant restaurant = cacheBean.getLoggedRestaurant();
-        restaurant.setLoggedIn(true);
+        restaurant.setLoggedIn(Boolean.TRUE);
         restaurantRepository.save(restaurant);
         log.info(String.format("%s is now logged in.", restaurant.getCode()));
     }

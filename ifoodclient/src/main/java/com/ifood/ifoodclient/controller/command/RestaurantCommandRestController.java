@@ -28,19 +28,19 @@ public class RestaurantCommandRestController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Ok", response = Restaurant.class),
             @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 404, message = "Not found"),
+            @ApiResponse(code = 404, message = "Not found")
     })
     @PatchMapping(value = "/restaurant/{code}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity patch(
             @ApiParam(value = "code", required = true) @PathVariable("code") String code,
             @ApiParam(name = "restaurant", required = true) @Valid @RequestBody Restaurant restaurant) {
 
+        log.info("PATCH method invoked for restaurant [" + code + "]");
         final Optional<Restaurant> existingRestaurant = queryService.findByCode(code);
-        if (!existingRestaurant.isPresent())
-            return ResponseEntity.badRequest().build();
 
-        final Restaurant patched = commandService.patch(existingRestaurant.get(), restaurant);
-
-        return ResponseEntity.ok(patched);
+        return existingRestaurant.map(r -> {
+            final Restaurant patched = commandService.patch(r, restaurant);
+            return ResponseEntity.ok(patched);
+        }).orElse(ResponseEntity.badRequest().build());
     }
 }

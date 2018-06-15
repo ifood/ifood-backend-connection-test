@@ -1,13 +1,13 @@
 package com.ifood.mqtt.ifoodmqttmanagement.service;
 
-import com.ifood.mqtt.ifoodmqttmanagement.domain.ClientKeepAliveLog;
+import com.ifood.mqtt.ifoodmqttmanagement.domain.Restaurant;
 import com.ifood.mqtt.ifoodmqttmanagement.infrastructure.Config;
-import com.ifood.mqtt.ifoodmqttmanagement.restinterfaces.ClientKeepAliveHttpClient;
+import com.ifood.mqtt.ifoodmqttmanagement.restinterfaces.RestaurantHttpClient;
 import feign.Feign;
 import feign.Logger;
+import feign.httpclient.ApacheHttpClient;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
-import feign.okhttp.OkHttpClient;
 import feign.slf4j.Slf4jLogger;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,9 +19,10 @@ import java.util.Map;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ClientKeepAliveService {
+public class RestaurantService {
 
     private final Config configuration;
+
     private Map<String, String> properties;
 
     @PostConstruct
@@ -29,22 +30,23 @@ public class ClientKeepAliveService {
         properties = configuration.getMqttClientSettings();
     }
 
-    public void createClientKeepAliveLog(String clientId, String isAvailable){
+    public void patchRestaurantAvailability(String isAvailable){
 
-        ClientKeepAliveHttpClient httpClient = Feign.builder()
-                .client(new OkHttpClient())
+        RestaurantHttpClient httpClient = Feign.builder()
+                .client(new ApacheHttpClient())
                 .encoder(new JacksonEncoder())
                 .decoder(new JacksonDecoder())
-                .logger(new Slf4jLogger(ClientKeepAliveHttpClient.class))
+                .logger(new Slf4jLogger(RestaurantHttpClient.class))
                 .logLevel(Logger.Level.FULL)
-                .target(ClientKeepAliveHttpClient.class,
+                .target(RestaurantHttpClient.class,
                         configuration.getIntegrationSettings().get("managementApiUrl"));
 
-        ClientKeepAliveLog requestBody = ClientKeepAliveLog.builder()
-                .restaurantCode(clientId)
+        Restaurant restaurant = Restaurant.builder()
+                .loggedIn(null)         // do not update on manager side
+                .sendKeepAlive(null)    // also.
                 .available(isAvailable)
                 .build();
 
-        httpClient.create(requestBody);
+        httpClient.patch(restaurant);
     }
 }

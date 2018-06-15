@@ -4,6 +4,7 @@ import com.ifood.mqtt.ifoodmqttmanagement.domain.QoSLevel;
 import com.ifood.mqtt.ifoodmqttmanagement.error.ApiException;
 import com.ifood.mqtt.ifoodmqttmanagement.infrastructure.Config;
 import com.ifood.mqtt.ifoodmqttmanagement.service.ClientKeepAliveService;
+import com.ifood.mqtt.ifoodmqttmanagement.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -24,6 +25,7 @@ public class MQTTClientManager implements MqttCallback, IMqttActionListener {
 
     private final Config configuration;
     private final ClientKeepAliveService clientKeepAliveService;
+    private final RestaurantService restaurantService;
 
     private MqttAsyncClient publisherAsyncClient;
     private IMqttToken connectToken;
@@ -46,7 +48,7 @@ public class MQTTClientManager implements MqttCallback, IMqttActionListener {
     private void createAsyncConnection() {
 
         try {
-            publisherAsyncClient = new MqttAsyncClient(
+            MqttAsyncClient publisherAsyncClient = new MqttAsyncClient(
                     properties.get("broker"),
                     MqttAsyncClient.generateClientId(),
                     new MemoryPersistence());
@@ -140,12 +142,16 @@ public class MQTTClientManager implements MqttCallback, IMqttActionListener {
      */
     @Override
     public void messageArrived(String topic, MqttMessage mqttMessage) {
+
         final String message = getPayloadFromMqttMessage(mqttMessage);
         String clientId = getClientCodeFromMqttMessage(message);
         String clientAvailable = getClientAvailabilityFromMqttMessage(message);
+
         log.info(String.format("Incoming KeepAlive message from client [%s]", clientId));
         log.info(String.format("Message received is: %s", message));
+
         clientKeepAliveService.createClientKeepAliveLog(clientId, clientAvailable);
+        restaurantService.patchRestaurantAvailability(clientAvailable);
     }
 
     /**

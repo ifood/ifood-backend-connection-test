@@ -15,8 +15,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.ifood.ifoodmanagement.util.IfoodUtil.isRestaurantOnline;
 import static com.ifood.ifoodmanagement.util.IfoodUtil.getRandomConnectionState;
+import static com.ifood.ifoodmanagement.util.IfoodUtil.isRestaurantOnline;
 
 @Service
 @RequiredArgsConstructor

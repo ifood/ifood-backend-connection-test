@@ -20,7 +20,7 @@ public class TerminateBean {
     public void onDestroy() {
         log.info("Starting to destroy Spring Container...");
         Restaurant restaurant = cacheBean.getLoggedRestaurant();
-        restaurant.setLoggedIn(false);
+        restaurant.setLoggedIn(Boolean.FALSE);
         restaurantRepository.save(restaurant);
     }
 }

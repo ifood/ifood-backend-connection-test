@@ -28,7 +28,6 @@ public class Restaurant {
     @Indexed(unique = true)
     private String code;
 
-    @NotNull
     private String name;
 
     private String foodTypes;
@@ -37,10 +36,8 @@ public class Restaurant {
 
     private boolean loggedIn;
 
-    @NotNull
     private boolean sendKeepAlive;
 
-    @NotNull
     private boolean available;
 
     @Transient

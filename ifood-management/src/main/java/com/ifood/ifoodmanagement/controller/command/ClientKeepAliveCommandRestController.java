@@ -44,34 +44,23 @@ public class ClientKeepAliveCommandRestController {
     public ResponseEntity create(
             @ApiParam(name = "clientKeepAliveLog") @RequestBody ClientKeepAliveLog clientKeepAliveLog) {
 
+        ResponseEntity responseEntity = null;
+
         try {
             final String code = clientKeepAliveLog.getRestaurantCode();
 
-            // Insert keepAlive log
-            final String keepAliveLogId =
-                    keepAliveCommandService.insertClientKeepAliveLog(clientKeepAliveLog);
+            if (!Objects.isNull(code)){
 
-            if (!Objects.isNull(keepAliveLogId)){
+                // Insert keepAlive log
+                final String keepAliveLogId =
+                        keepAliveCommandService.insertClientKeepAliveLog(clientKeepAliveLog);
 
-                // patch restaurant
-                final Optional<Restaurant> existingRestaurant = queryService.findByCode(code);
-
-                final DateTime lastModified = DateTime.now();
-                final boolean isOnline = IfoodUtil.isRestaurantOnline(existingRestaurant.get().isAvailable(), lastModified);
-
-                Restaurant toPatch = Restaurant.builder()
-                        .online(isOnline)
-                        .lastModified(lastModified)
-                        .build();
-                restaurantCommandService.patch(existingRestaurant.get(), toPatch);
+                responseEntity = ResponseEntity.created(new URI(keepAliveLogId)).build();
             }
-            return ResponseEntity.created(new URI(keepAliveLogId)).build();
         } catch (URISyntaxException e) {
-           return ResponseEntity.unprocessableEntity().build();
-        } catch (Exception ex){
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("ERROR: Could not execute operation");
+           responseEntity = ResponseEntity.unprocessableEntity().build();
         }
+
+        return responseEntity;
     }
 }

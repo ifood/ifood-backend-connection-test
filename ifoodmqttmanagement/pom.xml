@@ -91,6 +91,12 @@
             <artifactId>feign-jackson</artifactId>
             <version>${open-feign.version}</version>
         </dependency>
+        <!-- Required for PATCH support -->
+        <dependency>
+            <groupId>com.netflix.feign</groupId>
+            <artifactId>feign-httpclient</artifactId>
+            <version>8.18.0</version>
+        </dependency>
     </dependencies>
 
     <build>

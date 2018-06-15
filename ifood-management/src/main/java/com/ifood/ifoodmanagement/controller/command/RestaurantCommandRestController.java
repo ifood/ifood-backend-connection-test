@@ -56,15 +56,18 @@ public class RestaurantCommandRestController {
     })
     @PatchMapping(value = "/restaurant/{code}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity patch(
-            @ApiParam(value = "code", required = true) @PathVariable("customerId") String code,
+            @ApiParam(value = "code", required = true) @PathVariable("code") String code,
             @ApiParam(name = "restaurant", required = true) @Valid @RequestBody Restaurant restaurant) {
 
+        log.info("PATCH method invoked for restaurant [" + code + "]");
         final Optional<Restaurant> existingRestaurant = queryService.findByCode(code);
-        if (!existingRestaurant.isPresent())
+
+        if (existingRestaurant.isPresent()){
+            final Restaurant patched = commandService.patch(existingRestaurant.get(), restaurant);
+            return ResponseEntity.ok(patched);
+        }
+        else {
             return ResponseEntity.badRequest().build();
-
-        final Restaurant patched = commandService.patch(existingRestaurant.get(), restaurant);
-
-        return ResponseEntity.ok(patched);
+        }
     }
 }
