@@ -48,7 +48,7 @@ public class MQTTClientManager implements MqttCallback, IMqttActionListener {
         try {
             publisherAsyncClient = new MqttAsyncClient(
                     properties.get("broker"),
-                    properties.get("clientId"),
+                    MqttAsyncClient.generateClientId(),
                     new MemoryPersistence());
 
             publisherAsyncClient.setCallback(this);
