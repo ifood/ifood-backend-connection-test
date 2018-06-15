@@ -1,6 +1,5 @@
 package com.ifood.ifoodmanagement.util;
 
-import com.ifood.ifoodmanagement.domain.Restaurant;
 import org.joda.time.DateTime;
 import org.joda.time.Minutes;
 

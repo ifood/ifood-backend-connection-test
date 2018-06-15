@@ -17,6 +17,6 @@ public class SendKeepAliveJob implements Job {
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        ifoodClientCommandService.performDefaultRestaurantScheduledOperations();
+//        ifoodClientCommandService.performDefaultRestaurantScheduledOperations();
     }
 }

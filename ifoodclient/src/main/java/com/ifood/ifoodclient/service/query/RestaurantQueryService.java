@@ -27,7 +27,7 @@ public class RestaurantQueryService implements IRestaurantQueryService {
 
     private Optional<Restaurant> getFromCache(String code){
 
-        final Restaurant restaurant = cacheBean.getRestaurant();
+        final Restaurant restaurant = cacheBean.getLoggedRestaurant();
 
         if (!code.equalsIgnoreCase(restaurant.getCode())){
             log.error(("Error retrieving cached information for restaurant."));

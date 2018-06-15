@@ -25,7 +25,8 @@ public class RestaurantCommandService implements IRestaurantCommandService {
     public Restaurant patch(Restaurant existingRestaurant, Restaurant newRestaurant) {
 
         Optional.ofNullable(newRestaurant.getCode()).ifPresent(existingRestaurant::setCode);
-        existingRestaurant.setLastModified(DateTime.now());
+        Optional.ofNullable(newRestaurant.isOnline()).ifPresent(existingRestaurant::setOnline);
+        Optional.ofNullable(newRestaurant.getLastModified()).ifPresent(existingRestaurant::setLastModified);
 
         return restaurantRepository.save(existingRestaurant);
     }

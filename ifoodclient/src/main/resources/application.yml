@@ -69,4 +69,4 @@ ifoodproperties:
     managementApiUrl: http://localhost:8097/ifoodmanagement
 
 scheduling:
-  keepAliveCron: "0/30 0 0 ? * *"
+  keepAliveCron: "0/15 0 0 ? * *"

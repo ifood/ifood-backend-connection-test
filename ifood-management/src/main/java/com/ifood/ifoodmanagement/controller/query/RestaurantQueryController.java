@@ -63,7 +63,6 @@ public class RestaurantQueryController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Ok", response = ClientKeepAliveLog.class)})
     @GetMapping(value = "/restaurant/history/{code}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity fetchRestaurantAvailabilityHistory(
-            @RequestHeader(name = "Application-Id") String appId,
             @ApiParam(name = "code") @PathVariable String code,
             @ApiParam(name = "status") @RequestParam(required = false) String status,
             @ApiParam(name = "startDate") @RequestParam(required = false, value = "startDate") String startDate,

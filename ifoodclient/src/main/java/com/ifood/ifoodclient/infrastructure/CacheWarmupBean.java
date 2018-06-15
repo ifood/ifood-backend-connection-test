@@ -24,14 +24,14 @@ public class CacheWarmupBean {
         final Optional<Restaurant> firstByLoggedInFalse =
                 restaurantRepository.findDistinctFirstByLoggedInFalse();
 
-        firstByLoggedInFalse
-                .map(restaurant -> {
-                    cacheBean.putRestaurant(restaurant);
-                    return restaurant;
-                })
-                .orElseThrow(() -> ApiException.builder()
-                        .code(ApiException.INTERNAL_ERROR)
-                        .message("Error on restaurant CacheWarmup process...")
-                        .build());
+        if (firstByLoggedInFalse.isPresent()){
+            cacheBean.updateLoggedRestaurant(firstByLoggedInFalse.get());
+        }
+        else {
+            throw ApiException.builder()
+                    .code(ApiException.INTERNAL_ERROR)
+                    .message("Error on restaurant CacheWarmup process...")
+                    .build();
+        }
     }
 }

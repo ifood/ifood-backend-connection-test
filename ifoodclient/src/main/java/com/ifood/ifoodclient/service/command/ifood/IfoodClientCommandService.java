@@ -21,7 +21,7 @@ public class IfoodClientCommandService implements IifoodClientCommandService {
     @Override
     public void performDefaultRestaurantScheduledOperations(){
 
-        Restaurant restaurant = cacheBean.getRestaurant();
+        Restaurant restaurant = cacheBean.getLoggedRestaurant();
 
         this.sendKeepAlive(restaurant.getCode(), Boolean.toString(restaurant.isAvailable()));
         Restaurant patchedRestaurant = this.patchRestaurant(restaurant);
@@ -41,6 +41,6 @@ public class IfoodClientCommandService implements IifoodClientCommandService {
     }
 
     private void updateCache(Restaurant patched){
-        cacheBean.putRestaurant(patched);
+        cacheBean.updateLoggedRestaurant(patched);
     }
 }

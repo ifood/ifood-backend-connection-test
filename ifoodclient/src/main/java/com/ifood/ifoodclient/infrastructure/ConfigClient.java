@@ -1,21 +1,19 @@
 package com.ifood.ifoodclient.infrastructure;
 
 import com.ifood.ifoodclient.error.ApiException;
-import com.ifood.ifoodclient.job.SendKeepAliveJob;
+import com.ifood.ifoodclient.infrastructure.scheduler.ScheduledActionRunner;
 import com.ifood.ifoodclient.repository.RestaurantRepository;
+import com.ifood.ifoodclient.service.command.ifood.IfoodClientCommandService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.scheduling.quartz.SpringBeanJobFactory;
 
 import java.io.IOException;
-import java.util.Date;
 
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 
@@ -26,7 +24,7 @@ import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 public class ConfigClient {
 
     private final RestaurantRepository restaurantRepository;
-    private final ApplicationContext applicationContext;
+    private final IfoodClientCommandService ifoodClientCommandService;
 
     @Bean
     public TerminateBean getTerminateBean() {
@@ -45,26 +43,32 @@ public class ConfigClient {
 
     @Bean
     public JobDetail jobDetail() {
+
+        final JobDataMap newJobDataMap = new JobDataMap();
+        newJobDataMap.put("clientCode", getCacheBean().getLoggedRestaurant().getCode());
+        newJobDataMap.put("ifoodClientCommandService", ifoodClientCommandService);
+
         return JobBuilder.newJob()
-                .ofType(SendKeepAliveJob.class)
+                .ofType(ScheduledActionRunner.class)
                 .storeDurably()
                 .withIdentity(JobKey.jobKey("Qrtz_Job_Detail"))
-                .withDescription("SendKeepAliveJobDetail.")
+                .withDescription("SendKeepAliveJobDetail")
+                .usingJobData(newJobDataMap)
                 .build();
     }
 
     @Bean
-    public Trigger trigger(JobDetail job) {
+    public Trigger trigger() {
         return TriggerBuilder.newTrigger()
-                .forJob(job)
+                .forJob(jobDetail())
                 .withIdentity(TriggerKey.triggerKey("Qrtz_Trigger"))
                 .withDescription("SendKeepAliveJobTrigger")
-                .withSchedule(simpleSchedule().repeatForever().withIntervalInSeconds(30))
+                .withSchedule(simpleSchedule().repeatForever().withIntervalInSeconds(20))
                 .build();
     }
 
     @Bean
-    public Scheduler scheduler(Trigger trigger, JobDetail job) throws SchedulerException {
+    public Scheduler scheduler(Trigger trigger) throws SchedulerException {
 
         StdSchedulerFactory factory = new StdSchedulerFactory();
 
@@ -78,17 +82,9 @@ public class ConfigClient {
         }
 
         Scheduler scheduler = factory.getScheduler();
-        scheduler.setJobFactory(springBeanJobFactory());
-        scheduler.scheduleJob(job, trigger);
+        scheduler.scheduleJob(jobDetail(), trigger);
         scheduler.start();
 
         return scheduler;
-    }
-
-    @Bean
-    public SpringBeanJobFactory springBeanJobFactory() {
-        AutoWiringSpringBeanJobFactory jobFactory = new AutoWiringSpringBeanJobFactory();
-        jobFactory.setApplicationContext(applicationContext);
-        return jobFactory;
     }
 }
