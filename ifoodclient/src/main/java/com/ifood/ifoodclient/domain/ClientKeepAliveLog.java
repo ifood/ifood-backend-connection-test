@@ -7,8 +7,10 @@ import lombok.NoArgsConstructor;
 import org.joda.time.DateTime;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
@@ -20,6 +22,7 @@ public class ClientKeepAliveLog {
     @Id
     private String id;
 
+    @NotNull
     private String restaurantCode;
 
     private boolean available;
@@ -27,5 +30,6 @@ public class ClientKeepAliveLog {
     private boolean online;
 
     @LastModifiedDate
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private DateTime lastModified;
 }

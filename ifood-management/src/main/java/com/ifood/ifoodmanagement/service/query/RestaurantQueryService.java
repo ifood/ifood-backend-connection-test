@@ -7,7 +7,6 @@ import com.ifood.ifoodmanagement.repository.ClientKeepAliveRepository;
 import com.ifood.ifoodmanagement.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
 import org.joda.time.DateTime;
-import org.joda.time.Interval;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +16,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.ifood.ifoodmanagement.util.IfoodUtil.isRestaurantOnline;
+import static com.ifood.ifoodmanagement.util.IfoodUtil.getRandomConnectionState;
 
 @Service
 @RequiredArgsConstructor
@@ -35,17 +35,21 @@ public class RestaurantQueryService implements IRestaurantQueryService {
     }
 
     @Override
-    public List<ClientKeepAliveLog> fetchRestaurantAvailabilityHistory(String code, String status, Interval dateInterval) {
+    public List<ClientKeepAliveLog> fetchRestaurantAvailabilityHistory(
+            String code, boolean available, DateTime from, DateTime to) {
 
-        final Optional<DateTime> start = Optional.ofNullable(dateInterval.getStart());
-        final DateTime end = Optional.ofNullable(dateInterval.getEnd()).orElse(DateTime.now());
+        final Optional<DateTime> start = Optional.ofNullable(from);
+        final DateTime end = Optional.ofNullable(to).orElse(DateTime.now());
 
         if (start.isPresent()){
-            return clientKeepAliveRepository
-                    .findByRestaurantCodeAndAvailableAndLastModifiedBetween(code, status, start.get(), end);
+
+            final List<ClientKeepAliveLog> keepAliveLogsBetween = clientKeepAliveRepository
+                    .findByRestaurantCodeAndAvailableAndLastModifiedBetween(code, available, start.get().toDate(), end.toDate());
+
+            return keepAliveLogsBetween;
         }
 
-        return clientKeepAliveRepository.findByRestaurantCodeAndAvailable(code, status);
+        return clientKeepAliveRepository.findByRestaurantCodeAndAvailable(code, available);
     }
 
     @Override
@@ -68,13 +72,19 @@ public class RestaurantQueryService implements IRestaurantQueryService {
 
                     Optional<Restaurant> optionalRestaurant = restaurantRepository.findByCode(code);
 
-                    Restaurant restaurant = null;
                     if (optionalRestaurant.isPresent()){
-                        restaurant = optionalRestaurant.get();
-                        restaurant.setOnline(isRestaurantOnline(restaurant.isAvailable(), restaurant.getLastModified()));
+                        final boolean isOnline =
+                                isRestaurantOnline(optionalRestaurant.get().isAvailable(),
+                                                    optionalRestaurant.get().getLastModified());
+                        return Restaurant.builder()
+                                .code(code)
+                                .name(optionalRestaurant.get().getName())
+                                .online(isOnline)
+                                .connectionStatus(getRandomConnectionState())
+                                .build();
                     }
 
-                    return restaurant;
+                    return null;
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());

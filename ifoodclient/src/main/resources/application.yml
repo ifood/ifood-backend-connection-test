@@ -26,10 +26,7 @@ spring:
   cache:
     cache-names: restaurant
     caffeine:
-      spec: maximumSize=3
-
-cachesettings:
-  defaultKey: CACHED_RESTAURANT
+      spec: maximumSize=5
 
 # Management
 management:

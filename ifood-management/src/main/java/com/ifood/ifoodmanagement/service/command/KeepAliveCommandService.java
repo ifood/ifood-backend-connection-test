@@ -4,6 +4,7 @@ import com.ifood.ifoodmanagement.domain.ClientKeepAliveLog;
 import com.ifood.ifoodmanagement.repository.ClientKeepAliveRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
 
 import static com.ifood.ifoodmanagement.util.IfoodUtil.isRestaurantOnline;
@@ -22,7 +23,7 @@ public class KeepAliveCommandService implements IKeepAliveCommandService {
                 .builder()
                 .restaurantCode(clientKeepAliveLog.getRestaurantCode())
                 .available(clientKeepAliveLog.isAvailable())
-                .online(isRestaurantOnline(clientKeepAliveLog.isAvailable(), clientKeepAliveLog.getLastModified()))
+                .online(isRestaurantOnline(clientKeepAliveLog.isAvailable(), DateTime.now()))
                 .build();
 
         keepAliveRepository.save(newclientKeepAliveLog);

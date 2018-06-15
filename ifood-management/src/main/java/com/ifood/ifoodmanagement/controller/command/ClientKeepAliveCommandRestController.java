@@ -10,6 +10,7 @@ import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,6 +38,7 @@ public class ClientKeepAliveCommandRestController {
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Created", response = ClientKeepAliveLog.class),
             @ApiResponse(code = 422, message = "Unprocessable Entity"),
+            @ApiResponse(code = 500, message = "Internal Server Error"),
     })
     @PostMapping(value = "/clientKeepAlive", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity create(
@@ -66,6 +68,10 @@ public class ClientKeepAliveCommandRestController {
             return ResponseEntity.created(new URI(keepAliveLogId)).build();
         } catch (URISyntaxException e) {
            return ResponseEntity.unprocessableEntity().build();
+        } catch (Exception ex){
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("ERROR: Could not execute operation");
         }
     }
 }

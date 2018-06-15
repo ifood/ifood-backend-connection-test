@@ -63,7 +63,8 @@ public class ConfigClient {
                 .forJob(jobDetail())
                 .withIdentity(TriggerKey.triggerKey("Qrtz_Trigger"))
                 .withDescription("SendKeepAliveJobTrigger")
-                .withSchedule(simpleSchedule().repeatForever().withIntervalInSeconds(20))
+                .withSchedule(simpleSchedule().repeatForever().withIntervalInSeconds(30))
+//                .withSchedule(simpleSchedule().repeatForever().withIntervalInMinutes(1))
                 .build();
     }
 

@@ -22,7 +22,7 @@ public enum ConnectionState {
 
     @Override
     public String toString() {
-        return "Connection state: [" + state + "]";
+        return state;
     }
 
     public static ConnectionState getByType(String type){

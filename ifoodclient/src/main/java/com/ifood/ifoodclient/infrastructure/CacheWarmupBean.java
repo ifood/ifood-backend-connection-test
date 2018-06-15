@@ -21,17 +21,28 @@ public class CacheWarmupBean {
     @PostConstruct
     private void populateCache(){
 
-        final Optional<Restaurant> firstByLoggedInFalse =
-                restaurantRepository.findDistinctFirstByLoggedInFalse();
+        final Optional<Restaurant> firstByLoggedInFalse = this.getFirstNotLoggedIn();
 
-        if (firstByLoggedInFalse.isPresent()){
-            cacheBean.updateLoggedRestaurant(firstByLoggedInFalse.get());
-        }
-        else {
-            throw ApiException.builder()
-                    .code(ApiException.INTERNAL_ERROR)
-                    .message("Error on restaurant CacheWarmup process...")
-                    .build();
-        }
+        firstByLoggedInFalse
+                .map(this::logIn)
+                .orElseThrow(() -> ApiException.builder()
+                .code(ApiException.INTERNAL_ERROR)
+                .message("Error on restaurant CacheWarmup process...")
+                .build());
+    }
+
+    private Optional<Restaurant> getFirstNotLoggedIn(){
+        return restaurantRepository.findDistinctFirstByLoggedInFalse();
+    }
+
+    /**
+     * Ensure that clients always log in with distinct restaurants.
+     *
+     * @return logged restaurant
+     */
+    private synchronized Restaurant logIn(Restaurant restaurant){
+        cacheBean.setCacheKey(restaurant.getCode());
+        cacheBean.updateLoggedRestaurant(restaurant);
+        return restaurant;
     }
 }

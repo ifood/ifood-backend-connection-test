@@ -23,16 +23,16 @@ public class RestaurantCommandRestController {
 
     @ApiOperation(value = "Partially updates an Restaurant", response = Restaurant.class, tags = {"restaurant"})
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "Content-Type",required = true, dataType = "string", paramType = "header",defaultValue = MediaType.APPLICATION_JSON_VALUE),
-            @ApiImplicitParam(name = "Application-Id",required = true, dataType = "string", paramType = "header")})
+            @ApiImplicitParam(name = "Content-Type",required = true, dataType = "string", paramType = "header", defaultValue = MediaType.APPLICATION_JSON_VALUE)
+    })
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Ok", response = Restaurant.class),
             @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 404, message = "Not found"),
     })
     @PatchMapping(value = "/restaurant/{code}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity patch(
-            @RequestHeader(name = "Application-Id") String appId,
-            @ApiParam(value = "code", required = true) @PathVariable("customerId") String code,
+            @ApiParam(value = "code", required = true) @PathVariable("code") String code,
             @ApiParam(name = "restaurant", required = true) @Valid @RequestBody Restaurant restaurant) {
 
         final Optional<Restaurant> existingRestaurant = queryService.findByCode(code);

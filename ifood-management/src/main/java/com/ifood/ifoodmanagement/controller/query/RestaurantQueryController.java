@@ -1,19 +1,16 @@
 package com.ifood.ifoodmanagement.controller.query;
 
-import com.ifood.ifoodmanagement.domain.Restaurant;
 import com.ifood.ifoodmanagement.domain.ClientKeepAliveLog;
+import com.ifood.ifoodmanagement.domain.Restaurant;
 import com.ifood.ifoodmanagement.service.query.IRestaurantQueryService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.joda.time.DateTime;
-import org.joda.time.Interval;
-import org.joda.time.format.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Objects;
 
 @Api(value = "Ifood Restaurant API")
 @RestController
@@ -63,31 +60,35 @@ public class RestaurantQueryController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Ok", response = ClientKeepAliveLog.class)})
     @GetMapping(value = "/restaurant/history/{code}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity fetchRestaurantAvailabilityHistory(
-            @ApiParam(name = "code") @PathVariable String code,
-            @ApiParam(name = "status") @RequestParam(required = false) String status,
-            @ApiParam(name = "startDate") @RequestParam(required = false, value = "startDate") String startDate,
-            @ApiParam(name = "endDate") @RequestParam(required = false, value = "endDate") String endDate) {
+            @ApiParam(name = "code")
+                @PathVariable String code,
+            @ApiParam(name = "available")
+                @RequestParam(defaultValue = "false") boolean available,
+            @ApiParam(name = "from")
+                @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME)
+                @RequestParam(required = false, value = "from") DateTime from,
+            @ApiParam(name = "to")
+                @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME)
+                @RequestParam(required = false, value = "to") DateTime to) {
 
-        final String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-        final DateTime startDateFormatted = DateTimeFormat.forPattern(pattern).parseDateTime(startDate);
-        final DateTime endDateFormatted = !Objects.isNull(endDate) ?
-                DateTimeFormat.forPattern(pattern).parseDateTime(endDate) : null;
+        final List<ClientKeepAliveLog> logHistory = restaurantQueryService.
+                fetchRestaurantAvailabilityHistory(code, available, from, to);
 
-        return ResponseEntity.ok(restaurantQueryService.
-                fetchRestaurantAvailabilityHistory(code, status, new Interval(startDateFormatted, endDateFormatted)));
+        return ResponseEntity.ok(logHistory);
     }
 
     @ApiOperation(value = "Fetch Restaurants online/offline status", response = Restaurant.class, responseContainer = "List", tags = {"restaurant"})
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Content-Type",required = true, dataType = "string", paramType = "header", defaultValue = MediaType.APPLICATION_JSON_VALUE),
-            @ApiImplicitParam(name = "Application-Id",required = true, dataType = "string", paramType = "header")
     })
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Ok", response = Restaurant.class),})
     @GetMapping(value = "/restaurant/onlinestatus", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity fetchRestaurantsOnlineStatus(
-            @RequestHeader(name = "Application-Id") String appId,
-            @ApiParam(name = "restaurantCodes") @RequestParam List<String> restaurantCodes) {
+            @ApiParam(name = "codes") @RequestParam(value = "code") List<String> code) {
 
-        return ResponseEntity.ok(restaurantQueryService.fetchRestaurantsOnlineStatus(restaurantCodes));
+        final List<Restaurant> restaurantsByOnlineStatus =
+                restaurantQueryService.fetchRestaurantsOnlineStatus(code);
+
+        return ResponseEntity.ok(restaurantsByOnlineStatus);
     }
 }

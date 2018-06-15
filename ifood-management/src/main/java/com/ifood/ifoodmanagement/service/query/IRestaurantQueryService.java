@@ -1,8 +1,8 @@
 package com.ifood.ifoodmanagement.service.query;
 
-import com.ifood.ifoodmanagement.domain.Restaurant;
 import com.ifood.ifoodmanagement.domain.ClientKeepAliveLog;
-import org.joda.time.Interval;
+import com.ifood.ifoodmanagement.domain.Restaurant;
+import org.joda.time.DateTime;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,5 +15,5 @@ public interface IRestaurantQueryService {
 
     List<Restaurant> fetchRestaurantsOnlineStatus(List<String> restaurantCodes);
 
-    List<ClientKeepAliveLog> fetchRestaurantAvailabilityHistory(String code, String status, Interval dateInterval);
+    List<ClientKeepAliveLog> fetchRestaurantAvailabilityHistory(String code, boolean available, DateTime from, DateTime to);
 }
