@@ -38,9 +38,18 @@ public class ReportInsightsService implements IReportInsightsService {
         List<ClientKeepAliveLog> keepAliveLogs =
                 keepAliveQueryService.fetchAllByCode(restaurant.getCode());
 
+        if (keepAliveLogs.isEmpty()){
+            return ReportItem.builder()
+                    .code(restaurant.getCode())
+                    .name(restaurant.getName())
+                    .finalDescription("No data found for restaurant [" + restaurant.getCode() + "]")
+                    .build();
+        }
+
         final Double avgOnline = getFilterAverage(getFilter(true), keepAliveLogs);
         final Double avgOffline = 1 - avgOnline;
         final Double avgAvailable = getFilterAverage(getFilter(false), keepAliveLogs);
+        final RestaurantRating rating = RestaurantRating.getRating(avgOffline);
 
         final ReportItem reportItem = ReportItem.builder()
                 .code(restaurant.getCode())
@@ -48,8 +57,9 @@ public class ReportInsightsService implements IReportInsightsService {
                 .stars(restaurant.getStars())
                 .avgOnline(avgOnline)
                 .avgOffline(avgOffline)
-                .offlineRating(RestaurantRating.getRating(avgOffline))
+                .offlineRating(rating)
                 .availableRating(avgAvailable)
+                .finalDescription(rating.getRatingDescription())
                 .build();
 
         return reportItem;

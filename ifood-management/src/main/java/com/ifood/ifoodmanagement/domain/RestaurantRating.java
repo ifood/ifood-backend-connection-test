@@ -7,11 +7,11 @@ import java.util.List;
 
 public enum RestaurantRating {
 
-    AWFUL,
-    BAD,
-    AVERAGE,
-    GOOD,
-    EXCELLENT;
+    AWFUL("A restaurant which you should not count on"),
+    BAD("A restaurant which is unavailable most of the times"),
+    AVERAGE("A restaurant which has an average amount of availability"),
+    GOOD("A restaurant which availability is fairly often"),
+    EXCELLENT("A restaurant which is mostly reliable of being available");
 
     final static Range<Double> awfulRange = Range.between(0.0, 0.2);
     final static Range<Double> badRange = Range.between(0.21, 0.4);
@@ -21,6 +21,16 @@ public enum RestaurantRating {
 
     final static List<Range> ranges =
             Arrays.asList(awfulRange, badRange, averageRange, goodRange, excellentRange);
+
+    RestaurantRating(String ratingDescription) {
+        this.ratingDescription = ratingDescription;
+    }
+
+    public String getRatingDescription() {
+        return ratingDescription;
+    }
+
+    private String ratingDescription;
 
     public static RestaurantRating getRating(Double avgOffline){
 

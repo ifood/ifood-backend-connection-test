@@ -20,4 +20,6 @@ public class ReportItem {
     private RestaurantRating offlineRating;
 
     private Double availableRating;
+
+    private String finalDescription;
 }
