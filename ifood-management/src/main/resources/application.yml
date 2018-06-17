@@ -17,7 +17,7 @@ spring:
     index: ${spring.application.name}
   data:
     mongodb:
-      uri: mongodb+srv://mongouser:m0ng0u53r@mymongodbcluster-hwri1.mongodb.net/ifood-db?retryWrites=true
+      uri: mongodb+srv://ifood-user:if00d-u53r@mymongodbcluster-hwri1.mongodb.net/ifood-db?retryWrites=true
   jackson:
     default-property-inclusion: non_null
     date-format: com.fasterxml.jackson.databind.util.ISO8601DateFormat
@@ -40,6 +40,9 @@ ifoodproperties:
     broker: tcp://ec2-52-26-75-147.us-west-2.compute.amazonaws.com:1883
   integration:
     managementApiUrl: http://localhost:8097/ifoodmanagement
+  aws:
+    accessKey: AKIAJE2FY7N6SUZYJHHA
+    secretKey: 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
 
 #Logging
 logging:

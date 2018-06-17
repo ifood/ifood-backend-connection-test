@@ -19,6 +19,7 @@
     </parent>
 
     <properties>
+        <cloud-aws.version>1.2.2.RELEASE</cloud-aws.version>
         <docker.image.prefix>ifood-management</docker.image.prefix>
         <dockerfile-maven-version>1.4.3</dockerfile-maven-version>
         <eclipse-paho.version>1.0.2</eclipse-paho.version>
@@ -103,6 +104,12 @@
             <!--<groupId>org.springframework.cloud</groupId>-->
             <!--<artifactId>spring-cloud-starter-feign</artifactId>-->
         <!--</dependency>-->
+        <!-- AWS cloud dependencies -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-aws-context</artifactId>
+            <version>${cloud-aws.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

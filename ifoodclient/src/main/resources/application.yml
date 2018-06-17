@@ -15,7 +15,7 @@ spring:
     index: ${spring.application.name}
   data:
     mongodb:
-      uri: mongodb+srv://mongouser:m0ng0u53r@mymongodbcluster-hwri1.mongodb.net/ifood-db?retryWrites=true
+      uri: mongodb+srv://ifood-user:if00d-u53r@mymongodbcluster-hwri1.mongodb.net/ifood-db?retryWrites=true
   jackson:
     default-property-inclusion: non_null
     date-format: com.fasterxml.jackson.databind.util.ISO8601DateFormat
