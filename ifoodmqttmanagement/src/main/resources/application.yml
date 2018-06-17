@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: @project.artifactId@
+    index: ${spring.application.name}
+
+ifoodproperties:
+  mqttclient:
+    topic: ifoodclient-KeepAlive-topic
+    clientId: pahomqtt201806
+    userContext: MessageListener
+    broker: tcp://ec2-52-26-75-147.us-west-2.compute.amazonaws.com:1883
+  integration:
+    managementApiUrl: http://localhost:8097/ifoodmanagement
+
+#Logging
+logging:
+  path: /tmp/ifood-management/logs
+  file: ${logging.path}/application_${spring.application.index}

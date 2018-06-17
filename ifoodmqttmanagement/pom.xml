@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.ifood.mqtt</groupId>
+    <artifactId>ifoodmqttmanagement</artifactId>
+    <version>1.0.2-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>ifoodmqttmanagement</name>
+    <description>MQTT layer for ifood-backend-connection-test case</description>
+
+    <scm>
+        <url>https://github.com/wfigueiredo/ifood-backend-connection-test</url>
+        <connection>scm:git:git://github.com/wfigueiredo/ifood-backend-connection-test.git</connection>
+        <developerConnection>scm:git:git@github.com:wfigueiredo/ifood-backend-connection-test.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.0.2.RELEASE</version>
+        <relativePath /> <!-- lookup parent from repository -->
+    </parent>
+
+    <distributionManagement>
+        <repository>
+            <id>repo.com.ifood</id>
+            <name>S3 Release Repository</name>
+            <url>s3://repo.com.ifood/release</url>
+        </repository>
+        <snapshotRepository>
+            <id>repo.com.ifood</id>
+            <name>S3 Snapshot Repository</name>
+            <url>s3://repo.com.ifood/snapshot</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>repo.com.ifood.release</id>
+            <name>S3 release Repository for ifoodmqttmanagement</name>
+            <url>s3://repo.com.ifood/release</url>
+        </repository>
+        <repository>
+            <id>repo.com.ifood.snapshot</id>
+            <name>S3 snapshot Repository for ifoodmqttmanagement</name>
+            <url>s3://repo.com.ifood/snapshot</url>
+        </repository>
+    </repositories>
+
+    <properties>
+        <eclipse-paho.version>1.0.2</eclipse-paho.version>
+        <lombok.version>1.16.16</lombok.version>
+        <open-feign.version>9.3.1</open-feign.version>
+        <commons-lang.version>3.4</commons-lang.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
+    </properties>
+
+    <dependencies>
+        <!-- Spring Boot -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <!-- lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- paho mqtt -->
+        <dependency>
+            <groupId>org.eclipse.paho</groupId>
+            <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+            <version>${eclipse-paho.version}</version>
+        </dependency>
+        <!-- Commons lang -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang.version}</version>
+        </dependency>
+        <!-- Open Feign -->
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-okhttp</artifactId>
+            <version>${open-feign.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-slf4j</artifactId>
+            <version>${open-feign.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-jackson</artifactId>
+            <version>${open-feign.version}</version>
+        </dependency>
+        <!-- Required for PATCH support -->
+        <dependency>
+            <groupId>com.netflix.feign</groupId>
+            <artifactId>feign-httpclient</artifactId>
+            <version>8.18.0</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <!-- <extensions>
+            <extension>
+                <groupId>org.kuali.maven.wagons</groupId>
+                <artifactId>maven-s3-wagon</artifactId>
+                <version>1.2.1</version>
+            </extension>
+        </extensions> -->
+        <extensions>
+            <extension>
+                <groupId>org.springframework.build</groupId>
+                <artifactId>aws-maven</artifactId>
+                <version>5.0.0.RELEASE</version>
+            </extension>
+        </extensions>
+    </build>
+
+</project>

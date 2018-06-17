@@ -1,0 +1,69 @@
+# Server
+server:
+  port: 0
+  tomcat:
+    accesslog:
+      enabled: true
+      directory: ${logging.path}/
+      prefix: ${spring.application.name}_access_log
+  compression:
+    enabled: true
+
+spring:
+  application:
+    name: @project.artifactId@
+    index: ${spring.application.name}
+  data:
+    mongodb:
+      uri: mongodb+srv://ifood-user:if00d-u53r@mymongodbcluster-hwri1.mongodb.net/ifood-db?retryWrites=true
+  jackson:
+    default-property-inclusion: non_null
+    date-format: com.fasterxml.jackson.databind.util.ISO8601DateFormat
+    serialization:
+      write_dates_as_timestamps: false
+      write_date_timestamps_as_nanoseconds: false
+      write_empty_json_arrays: false
+  cache:
+    cache-names: restaurant
+    caffeine:
+      spec: maximumSize=5
+
+# Management
+management:
+  context-path: /@project.artifactId@
+  security:
+    enabled: false
+
+ifoodproperties:
+  mqttclient:
+    topic: ifoodclient-KeepAlive-topic
+    clientId: pahomqtt201806
+    userContext: MessageListener
+    broker: tcp://ec2-52-26-75-147.us-west-2.compute.amazonaws.com:1883
+  integration:
+    managementApiUrl: http://localhost:8097/ifoodmanagement
+
+scheduling:
+  keepAliveCron: "0 0/2 * 1/1 * ?"
+
+#Logging
+logging:
+  path: /tmp/ifood-client/logs
+  file: ${logging.path}/application_${spring.application.index}
+
+---
+
+spring:
+  profiles: development
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/ifood-db?minPoolSize=10&maxIdleTimeMS=240000&connectTimeoutMS=5000&socketTimeoutMS=15000
+
+ifoodproperties:
+  mqttclient:
+    broker: tcp://localhost:1883
+  integration:
+    managementApiUrl: http://localhost:8097/ifoodmanagement
+
+scheduling:
+  keepAliveCron: "0/15 0 0 ? * *"
