@@ -6,6 +6,7 @@
     <groupId>com.ifood</groupId>
     <artifactId>ifoodmanagement</artifactId>
     <version>1.0.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
     <name>ifood-management</name>
     <description>Ifood Management Platform</description>
@@ -92,11 +93,11 @@
             <version>${commons-lang.version}</version>
         </dependency>
         <!-- Required for PATCH support -->
-        <!--<dependency>-->
-            <!--<groupId>com.netflix.feign</groupId>-->
-            <!--<artifactId>feign-httpclient</artifactId>-->
-            <!--<version>8.18.0</version>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>com.netflix.feign</groupId>
+            <artifactId>feign-httpclient</artifactId>
+            <version>8.18.0</version>
+        </dependency>
         <!-- FEIGN -->
         <!--<dependency>-->
             <!--<groupId>org.springframework.cloud</groupId>-->
@@ -110,7 +111,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-            <plugin>
+            <!-- <plugin>
                 <groupId>com.spotify</groupId>
                 <artifactId>dockerfile-maven-plugin</artifactId>
                 <version>${dockerfile-maven-version}</version>
@@ -131,7 +132,7 @@
                         <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
                     </buildArgs>
                 </configuration>
-            </plugin>
+            </plugin> -->
         </plugins>
     </build>
 

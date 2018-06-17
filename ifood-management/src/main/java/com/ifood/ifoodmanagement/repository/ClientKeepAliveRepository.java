@@ -14,4 +14,6 @@ public interface ClientKeepAliveRepository extends MongoRepository<ClientKeepAli
 
     List<ClientKeepAliveLog> findByRestaurantCodeAndAvailableAndLastModifiedBetween(
             String restaurantCode, boolean available, Date from, Date to);
+
+    List<ClientKeepAliveLog> findByRestaurantCode(String code);
 }

@@ -10,6 +10,13 @@
     <name>ifoodclient</name>
     <description>Ifood restaurant client app</description>
 
+    <scm>
+        <url>https://github.com/wfigueiredo/ifood-backend-connection-test</url>
+        <connection>scm:git:git://github.com/wfigueiredo/ifood-backend-connection-test.git</connection>
+        <developerConnection>scm:git:git@github.com:wfigueiredo/ifood-backend-connection-test.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -18,6 +25,7 @@
     </parent>
 
     <properties>
+        <ifood-mqttmanagement.version>1.0.1-SNAPSHOT</ifood-mqttmanagement.version>
         <docker.image.prefix>ifoodclient</docker.image.prefix>
         <dockerfile-maven-version>1.4.3</dockerfile-maven-version>
         <eclipse-paho.version>1.0.2</eclipse-paho.version>
@@ -28,6 +36,19 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>repo.com.ifood.release</id>
+            <name>S3 Release Repository</name>
+            <url>s3://repo.com.ifood/release</url>
+        </repository>
+        <repository>
+            <id>repo.com.ifood.snapshot</id>
+            <name>S3 Snapshot Repository</name>
+            <url>s3://repo.com.ifood/snapshot</url>
+        </repository>
+    </repositories>
 
     <dependencies>
         <!-- quartz -->
@@ -95,11 +116,18 @@
         <dependency>
             <groupId>com.ifood.mqtt</groupId>
             <artifactId>ifoodmqttmanagement</artifactId>
-            <version>${project.version}</version>
+            <version>${ifood-mqttmanagement.version}</version>
         </dependency>
     </dependencies>
 
     <build>
+        <extensions>
+            <extension>
+                <groupId>org.springframework.build</groupId>
+                <artifactId>aws-maven</artifactId>
+                <version>5.0.0.RELEASE</version>
+            </extension>
+        </extensions>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

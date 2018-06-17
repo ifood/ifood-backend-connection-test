@@ -1,38 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.ifood.mqtt</groupId>
     <artifactId>ifoodmqttmanagement</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>ifoodmqttmanagement</name>
     <description>MQTT layer for ifood-backend-connection-test case</description>
 
+    <scm>
+        <url>https://github.com/wfigueiredo/ifood-backend-connection-test</url>
+        <connection>scm:git:git://github.com/wfigueiredo/ifood-backend-connection-test.git</connection>
+        <developerConnection>scm:git:git@github.com:wfigueiredo/ifood-backend-connection-test.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.0.2.RELEASE</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath /> <!-- lookup parent from repository -->
     </parent>
 
     <distributionManagement>
-        <snapshotRepository>
-            <id>repo.com.ifood</id>
-            <url>s3://repo.com.ifood/snapshot</url>
-        </snapshotRepository>
         <repository>
             <id>repo.com.ifood</id>
+            <name>S3 Release Repository</name>
             <url>s3://repo.com.ifood/release</url>
         </repository>
+        <snapshotRepository>
+            <id>repo.com.ifood</id>
+            <name>S3 Snapshot Repository</name>
+            <url>s3://repo.com.ifood/snapshot</url>
+        </snapshotRepository>
     </distributionManagement>
 
     <repositories>
         <repository>
-            <id>repo.com.ifood</id>
+            <id>repo.com.ifood.release</id>
+            <name>S3 release Repository for ifoodmqttmanagement</name>
             <url>s3://repo.com.ifood/release</url>
+        </repository>
+        <repository>
+            <id>repo.com.ifood.snapshot</id>
+            <name>S3 snapshot Repository for ifoodmqttmanagement</name>
+            <url>s3://repo.com.ifood/snapshot</url>
         </repository>
     </repositories>
 
@@ -100,11 +114,18 @@
     </dependencies>
 
     <build>
-        <extensions>
+        <!-- <extensions>
             <extension>
                 <groupId>org.kuali.maven.wagons</groupId>
                 <artifactId>maven-s3-wagon</artifactId>
                 <version>1.2.1</version>
+            </extension>
+        </extensions> -->
+        <extensions>
+            <extension>
+                <groupId>org.springframework.build</groupId>
+                <artifactId>aws-maven</artifactId>
+                <version>5.0.0.RELEASE</version>
             </extension>
         </extensions>
     </build>
