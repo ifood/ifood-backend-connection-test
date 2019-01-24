@@ -1,0 +1,41 @@
+.gradle
+/build/
+!gradle/wrapper/gradle-wrapper.jar
+
+## Directory-based project format:
+.idea
+
+**/build
+
+tmp/
+out/
+
+import_surrogates.log
+
+.DS_Store
+
+## IntelliJ IDEA
+.idea
+*.iws
+*.iml
+*.ipr
+/out/
+
+## STS
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+## NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+
+

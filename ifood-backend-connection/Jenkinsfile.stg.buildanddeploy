@@ -1,0 +1,72 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Pull Ifood Backend Connection') {
+            steps {
+                git credentialsId: 'ifood-backend-connection', url: 'git@github.com:jamilsonbatista/ifood-backend-connection-test.git'
+            }
+        }
+
+        stage('Build / Test') {
+            steps {
+                withEnv(['SPRING_PROFILES_ACTIVE=staging', 'APP_DATABASE_URL=jdbc:postgresql://localhost/staging_ifood_backend_connection']) {
+                    withCredentials([string(credentialsId: 'stg_admin_user', variable: 'APP_DATABASE_USERNAME'),
+                                    string(credentialsId: 'stg_admin_password', variable: 'APP_DATABASE_PASSWORD')]) {
+                        sh './gradlew -g . --info clean test'
+                    }
+                }
+            }
+        }
+
+        stage('Upload Archives') {
+            steps {
+                withEnv(['SPRING_PROFILES_ACTIVE=staging', 'APP_DATABASE_URL=jdbc:postgresql://localhost/staging_ifood_backend_connection']) {
+                    withCredentials([string(credentialsId: 'stg_admin_user', variable: 'APP_DATABASE_USERNAME'),
+                                    string(credentialsId: 'stg_admin_password', variable: 'APP_DATABASE_PASSWORD')]) {
+                        sh './gradlew -g . --info -DversionNumber=1.2 -DbuildNumber=$BUILD_NUMBER clean build uploadArchives'
+                    }
+                }
+            }
+        }
+
+        stage('Liquibase Update') {
+            steps {
+                withEnv(['APP_DATABASE_URL=jdbc:postgresql://localhost/staging_ifood_backend_connection']) {
+                    withCredentials([string(credentialsId: 'stg_admin_user', variable: 'APP_DATABASE_USERNAME'),
+                                    string(credentialsId: 'stg_admin_password', variable: 'APP_DATABASE_PASSWORD')]) {
+
+                        sh './gradlew -g . update'
+                    }
+                }
+            }
+        }
+
+        stage('Deploy to Staging') {
+            steps {
+                withEnv(['ENVIRONMENT=staging',
+                    'SSH_KEYS_PATH=/var/jenkins_ssh',
+                    'SSH_HOSTS_FILE=/var/jenkins_ssh/known_hosts',
+                    'MAJOR_VERSION=1.2',
+                    'VERSION_PROJECT=ifood-backend-connection',
+                    'COOKBOOK_REPO_PATH=add cookbook',
+                    'COOKBOOK_NAME=ifood-backend-connection-cookbook',
+                    'TARGET_HOST=staging-ifood-backend-connection.com.br',
+                    'TARGET_KEY_NAME=ifood-backend-connection.pem']) {
+
+                    sh 'deploy/deploy.sh'
+                }
+            }
+        }
+
+        stage('E2E Tests') {
+            steps {
+                dir('e2e-tests') {
+                    wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']) {
+                        sh './gradlew -g . executeFeatures'
+                    }
+                }
+            }
+        }
+    }
+}

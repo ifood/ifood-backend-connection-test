@@ -1,0 +1,115 @@
+buildscript {
+	apply from: 'properties.gradle'
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath('org.liquibase:liquibase-gradle-plugin:1.2.1')
+		classpath('org.postgresql:postgresql:9.3-1100-jdbc4')
+	}
+}
+
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'org.liquibase.gradle'
+
+group = 'br.com.ifood'
+def projectVersion = buildVersion()
+
+static def buildVersion() {
+    def build = System.getProperty("buildNumber") ?: "dev"
+    def version = System.getProperty("versionNumber") ?: "1.0"
+    "${version}-${build}"
+}
+
+allprojects {
+	apply plugin: 'java'
+
+    version = projectVersion
+	sourceCompatibility = 1.8
+	repositories {
+		mavenCentral()
+	}
+}
+
+dependencies {
+	implementation ('org.springframework.boot:spring-boot-starter-web') {
+		exclude module: "spring-boot-starter-tomcat"
+	}
+	implementation 'org.springframework.boot:spring-boot-starter-integration'
+    implementation 'org.springframework.boot:spring-boot-starter-jetty'
+    implementation "org.springframework.integration:spring-integration-mqtt:${springIntegration}"
+
+	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.8.5'
+	implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.4.0"
+	
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation "org.springframework.boot:spring-boot-actuator:$springBootVersion"
+	
+    implementation "org.apache.ignite:ignite-core:${apacheIgnite}"
+    implementation "org.apache.ignite:ignite-spring:${apacheIgnite}"
+    implementation "org.apache.ignite:ignite-spring-data:${apacheIgnite}"
+    implementation "org.apache.ignite:ignite-indexing:${apacheIgnite}"
+    implementation "org.apache.ignite:ignite-slf4j:${apacheIgnite}"
+
+	implementation "io.springfox:springfox-swagger2:${swaggerVersion}"
+	implementation "io.springfox:springfox-swagger-ui:${swaggerVersion}"
+
+	implementation 'org.postgresql:postgresql:9.3-1100-jdbc4'
+
+	compile "joda-time:joda-time:$jodaTimeVersion"
+
+	runtime('com.h2database:h2')
+
+	compileOnly("org.projectlombok:lombok:1.18.2")
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'com.jayway.restassured:rest-assured:2.9.0'
+}
+
+defaultTasks 'clean', 'test'
+
+bootRun {
+	doFirst {
+		jvmArgs= [
+				'--add-exports', 'java.base/jdk.internal.misc=ALL-UNNAMED'
+				, '--add-exports', 'java.base/sun.nio.ch=ALL-UNNAMED'
+				, '--add-exports', 'java.management/com.sun.jmx.mbeanserver=ALL-UNNAMED'
+				, '--add-exports', 'jdk.internal.jvmstat/sun.jvmstat.monitor=ALL-UNNAMED'
+				, '--add-modules', 'java.xml.bind'
+				, '--add-exports', 'module/package=ALL-UNNAMED'
+		]
+	}
+}
+
+test {
+	doFirst {
+		jvmArgs= [
+				'--add-exports', 'java.base/jdk.internal.misc=ALL-UNNAMED'
+				, '--add-exports', 'java.base/sun.nio.ch=ALL-UNNAMED'
+				, '--add-exports', 'java.management/com.sun.jmx.mbeanserver=ALL-UNNAMED'
+				, '--add-exports', 'jdk.internal.jvmstat/sun.jvmstat.monitor=ALL-UNNAMED'
+				, '--add-modules', 'java.xml.bind'
+				, '--add-exports', 'module/package=ALL-UNNAMED'
+		]
+	}
+	testLogging {
+		events "passed", "skipped", "failed", "standardOut", "standardError"
+		exceptionFormat "full"
+	}
+}
+
+def databaseUrl = System.getenv('APP_DATABASE_URL') ?: 'jdbc:postgresql://localhost/postgres'
+def databaseUsername = System.getenv('APP_DATABASE_USERNAME') ?: 'postgres'
+def databasePassword = System.getenv('APP_DATABASE_PASSWORD') ?: ''
+
+liquibase {
+	activities {
+		main {
+			changeLogFile 'src/main/resources/liquibase/changelog.xml'
+			url databaseUrl
+			username databaseUsername
+			password databasePassword
+		}
+	}
+}

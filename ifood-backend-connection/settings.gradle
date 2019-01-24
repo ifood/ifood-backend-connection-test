@@ -1,0 +1,3 @@
+rootProject.name = 'ifood-backend-connection'
+include 'ifood-client'
+
