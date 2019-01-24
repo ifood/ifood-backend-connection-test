@@ -1,0 +1,8 @@
+project.ext {
+    springBootVersion = "1.5.19.RELEASE"
+    lombokVersion = "1.18.4"
+    springIntegration = "5.0.3.RELEASE"
+    apacheIgnite = "2.7.0"
+    swaggerVersion = "2.9.2"
+    jodaTimeVersion = "2.7"
+}

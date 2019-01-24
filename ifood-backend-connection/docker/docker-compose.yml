@@ -1,0 +1,31 @@
+version: "3"
+
+services:
+
+  ignite:
+    image: apacheignite/ignite:2.7.0
+    container_name: ifood_backend_connection_ignite
+    ports:
+    - "47500-47509"     # TCP
+    - "47100-47200"     # SPI
+    network_mode: "host"
+    volumes:
+    - ./config/ignite/config.xml:/opt/ignite/apache-ignite-fabric/config/config.xml
+    environment:
+      CONFIG_URI: file:///opt/ignite/apache-ignite-fabric/config/config.xml
+      IGNITE_QUIET: "false"
+
+  mosquitto:
+    image: eclipse-mosquitto:1.5
+    container_name: ifood_backend_connection_mosquitto
+    ports:
+    - "1883:1883"
+    volumes:
+    - ./config/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+    - ${MOSQUITTO_DATA}:/mosquitto/data
+
+  postgres:
+    image: postgres:9.4
+    container_name: ifood_backend_connection_postgres
+    ports:
+    - "5432:5432"

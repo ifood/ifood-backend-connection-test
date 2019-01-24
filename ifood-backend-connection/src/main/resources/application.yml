@@ -1,0 +1,82 @@
+spring.profiles.active: docker
+spring.h2.console.enabled: true
+
+server:
+  port: ${service.port:8080}
+  contextPath: /ifood-backend-connection
+
+healthcheck:
+  frequency: 30
+
+mqtt:
+  host: tcp://localhost
+  port: 1883
+  topic: ifood/backend/connection/alivesignal
+
+---
+spring:
+  profiles: docker
+
+  db:
+    hibernate.auto: validate
+    datasource:
+      driver-class-name: org.postgresql.Driver
+      url: jdbc:postgresql://localhost/postgres
+      username: postgres
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+---
+
+spring:
+  profiles: integration-test
+
+  db:
+    hibernate.auto: create-drop
+    datasource:
+      driver-class-restaurantCode: org.h2.Driver
+      url: jdbc:h2:file:~/h2-database;TRACE_LEVEL_FILE=0;TRACE_LEVEL_SYSTEM_OUT=0;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+      username: sa
+      password:
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+---
+
+spring:
+  profiles: staging
+
+  db:
+    hibernate.auto: validate
+    datasource:
+      remove-abandoned: true
+      driver-class-restaurantCode: org.postgresql.Driver
+      url: ${APP_DATABASE_URL:}
+      username: ${APP_DATABASE_USERNAME:}
+      password: ${APP_DATABASE_PASSWORD:}
+---
+
+spring:
+  profiles: validation
+
+  db:
+    hibernate.auto: validate
+    datasource:
+      remove-abandoned: true
+      driver-class-restaurantCode: org.postgresql.Driver
+      url: ${APP_DATABASE_URL:}
+      username: ${APP_DATABASE_USERNAME:}
+      password: ${APP_DATABASE_PASSWORD:}
+
+---
+
+spring:
+  profiles: production
+
+  db:
+    hibernate.auto: validate
+    datasource:
+      remove-abandoned: true
+      driver-class-restaurantCode: org.postgresql.Driver
+      url: ${APP_DATABASE_URL:}
+      username: ${APP_DATABASE_USERNAME:}
+      password: ${APP_DATABASE_PASSWORD:}
